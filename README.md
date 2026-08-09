@@ -4,7 +4,7 @@
 
 ### Demo
 
-- [预览](https://mlhh.cn)
+- [预览](https://bsgun.cn)
 
 ### 修改
 
@@ -37,7 +37,7 @@ npm run build
 
 >点击后自动部署并创建仓库
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/LiamBlog/HomeVue&repository-name=Home-Vue)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/JLinMr/Home-Vue&repository-name=Home-Vue)
 
 ### 动态版本
 
@@ -45,7 +45,30 @@ npm run build
 
 ### 更新记录
 
-- 2026-08-09：将全局字体替换为本地 `YSHST.woff2`。
-- 2026-08-09：优化页面滚动、弹层、二维码、引语、网站卡片、页脚及非头像交互的响应式布局与可访问性，头像相关内容保持不变。
-- 2026-08-09：将萌备案更新为 `萌ICP备20240301号`，并同步更新查询链接。
-- 2026-08-09：前端第二轮打磨：桌面内容垂直居中、Swiper 释放边缘滚轮、触屏 hover 防粘滞、弹层可访问性、触摸优化与动画降级。
+> 以下更新均于 2026-08-09 完成；全程未改动头像相关的图片来源、尺寸、圆形样式、边框、定位与状态球。
+
+#### 字体
+
+- 将全局字体替换为本地 `YSHST.woff2`（`src/style.less` 注册 `@font-face`，`html`/`body` 改 `font-family: 'YSHST', sans-serif`），组件级 Georgia 特殊字体保持不变。
+
+#### 布局优化
+
+- 统一页面滚动模型：消除 `html`/`body`/`#app` 多重滚动冲突，主内容区改为 `overflow-y: auto` + `overscroll-behavior` + `scrollbar-gutter`。
+- 优化弹层、二维码、引语、网站卡片、页脚及非头像交互的响应式布局与可访问性。
+- 移动端用户名与头像居中对齐，引语桌面单行、移动端最多 3 行。
+
+#### 备案变更
+
+- 将萌备案更新为 `萌ICP备20240301号`，并同步查询链接至 `https://icp.gov.moe/?keyword=20240301`。
+
+#### 部署修复
+
+- 修复部署构建失败：将 `index.html` 中的 `%VITE_UMAMI_WEBSITE_ID%`、`%VITE_ICON_LIBRARY%`、`%VITE_FONT_LIBRARY%` 占位符内联为公开值，避免部署环境缺少 `.env` 时 Vite 报 `URI malformed`。
+- 修复部署环境名字/头像不显示：`Home.vue` 的 `profileImage`、`userName` 增加 `.env` 缺失时的默认值兜底（头像仍指向原 URL，仅加 `referrerpolicy` 与缺失兜底）。
+
+#### 前端多轮打磨
+
+- **第二轮**：桌面内容垂直居中、Swiper 释放边缘滚轮、触屏 hover 防粘滞（`@media (hover: hover)`）、弹层可访问性、触摸优化与动画降级。
+- **第三轮**：基础排版与字体平滑、全局键盘焦点环（`focus-visible`）、主区域平滑滚动与自定义滚动条、Esc 关闭弹层、移动端对齐。
+- **第四轮（三方向）**：网站卡片 hover 微交互（上浮/边框高亮/图标主题色与缩放）、关于弹层平滑进场动画（`aboutIn` 关键帧 + 子项错峰）、iPad/折叠屏断点适配。
+- **收尾**：深色模式切换平滑过渡、首屏淡入、全局 `prefers-reduced-motion` 减少动态偏好降级。
