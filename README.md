@@ -4,7 +4,7 @@
 
 ### Demo
 
-- [预览](https://bsgun.cn)
+- [预览](https://mlhh.cn)
 
 ### 修改
 
@@ -37,7 +37,7 @@ npm run build
 
 >点击后自动部署并创建仓库
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/JLinMr/Home-Vue&repository-name=Home-Vue)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/LiamBlog/HomeVue&repository-name=Home-Vue)
 
 ### 动态版本
 
@@ -45,7 +45,7 @@ npm run build
 
 ### 更新记录
 
-> 以下更新均于 2026-08-09 完成；全程未改动头像相关的图片来源、尺寸、圆形样式、边框、定位与状态球。
+> 以下更新均于 2026-08-09 完成。
 
 #### 字体
 
@@ -56,10 +56,6 @@ npm run build
 - 统一页面滚动模型：消除 `html`/`body`/`#app` 多重滚动冲突，主内容区改为 `overflow-y: auto` + `overscroll-behavior` + `scrollbar-gutter`。
 - 优化弹层、二维码、引语、网站卡片、页脚及非头像交互的响应式布局与可访问性。
 - 移动端用户名与头像居中对齐，引语桌面单行、移动端最多 3 行。
-
-#### 备案变更
-
-- 将萌备案更新为 `萌ICP备20240301号`，并同步查询链接至 `https://icp.gov.moe/?keyword=20240301`。
 
 #### 部署修复
 
