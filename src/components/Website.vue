@@ -74,7 +74,7 @@ onMounted(() => {
   border: 1px solid var(--border-color);
   background-color: rgba(var(--background-color-rgb), 0.2);
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
 
   &:focus-visible {
     outline: 2px solid var(--hover-link-color);
@@ -83,8 +83,19 @@ onMounted(() => {
 
   @media (hover: hover) {
     &:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 1px 8px var(--shadow-color);
+      transform: translateY(-4px);
+      box-shadow: 0 6px 18px var(--shadow-color);
+      border-color: var(--hover-link-color);
+      background-color: rgba(var(--background-color-rgb), 0.35);
+
+      .site-content i,
+      .site-name {
+        color: var(--hover-link-color);
+      }
+
+      .site-content i {
+        transform: scale(1.08);
+      }
     }
   }
 }
@@ -98,6 +109,8 @@ onMounted(() => {
 
   i {
     font-size: var(--icon-size);
+    color: var(--text-color);
+    transition: color 0.3s ease, transform 0.3s ease;
   }
 }
 
@@ -107,7 +120,9 @@ onMounted(() => {
   font-size: 1.17em;
   font-weight: bold;
   text-align: center;
+  color: var(--text-color);
   overflow-wrap: anywhere;
+  transition: color 0.3s ease;
 }
 
 @media screen and (max-width: 768px) {
@@ -145,6 +160,17 @@ onMounted(() => {
 
   .site-content {
     flex-direction: row;
+  }
+}
+
+/* iPad 竖屏 / 折叠屏展开态：保持三列，微调容器与间距 */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .container {
+    margin: 24px 0 16px;
+  }
+
+  .site-grid {
+    gap: 14px;
   }
 }
 

@@ -85,6 +85,7 @@ fetchCommits();
   text-align: center;
   box-sizing: border-box;
   scrollbar-gutter: stable;
+  animation: aboutIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 
   @media (max-width: 600px) {
     max-height: calc(100dvh - 24px);
@@ -221,15 +222,26 @@ h3 {
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes aboutIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 .about-modal-content > div {
   display: flex;
   flex-direction: column;
-  animation: fadeIn 0.5s ease-out forwards;
+  animation: fadeIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
   opacity: 0;
 
-  &:nth-child(1) { animation-delay: 0.2s; }
-  &:nth-child(2) { animation-delay: 0.3s; }
-  &:nth-child(3) { animation-delay: 0.4s; }
+  &:nth-child(1) { animation-delay: 0.12s; }
+  &:nth-child(2) { animation-delay: 0.2s; }
+  &:nth-child(3) { animation-delay: 0.28s; }
 }
 
 .update-item {
@@ -241,6 +253,10 @@ h3 {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .about-page {
+    animation: none;
+  }
+
   .loading-spinner {
     animation: none;
   }
