@@ -49,7 +49,43 @@ const policenumber = ref(import.meta.env.VITE_APP_POLICE_NUMBER);
   overflow-y: auto;
   overscroll-behavior-y: contain;
   scrollbar-gutter: stable;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(128, 128, 128, 0.4) transparent;
   -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(128, 128, 128, 0.4);
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .main-content {
+    scroll-behavior: auto;
+  }
+}
+
+/* 大屏 / iPad 横屏：增加侧边留白，避免内容贴边 */
+@media (min-width: 1024px) {
+  .main-content {
+    padding-inline: 24px;
+  }
+}
+
+/* iPad 竖屏 / 折叠屏展开态 */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .main-content {
+    padding-inline: 16px;
+  }
 }
 
 .background {
@@ -61,6 +97,7 @@ const policenumber = ref(import.meta.env.VITE_APP_POLICE_NUMBER);
   z-index: -1;
   /* 确保背景不会阻止滚动 */
   pointer-events: none;
+  transition: background-color 0.35s ease;
 }
 
 footer {
@@ -77,6 +114,7 @@ footer {
   /* 确保footer不会阻止内容滚动 */
   position: relative;
   z-index: 1;
+  transition: color 0.35s ease;
 }
 
 .footer-content {

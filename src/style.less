@@ -57,7 +57,38 @@ body, html {
   margin: 0;
   font-family: 'YSHST', sans-serif;
   color: var(--text-color);
+  line-height: 1.6;
   overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  transition: filter 0.35s ease, color 0.35s ease;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--hover-link-color);
+  outline-offset: 2px;
+}
+
+#app {
+  animation: pageIn 0.55s ease both;
+}
+
+@keyframes pageIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 body.dark-mode {
