@@ -4,7 +4,7 @@
 
 ### Demo
 
-- [预览](https://bsgun.cn)
+- [预览](https://mlhh.cn)
 
 ### 修改
 
@@ -37,7 +37,7 @@ npm run build
 
 >点击后自动部署并创建仓库
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/JLinMr/Home-Vue&repository-name=Home-Vue)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/LiamBlog/HomeVue&repository-name=Home-Vue)
 
 ### 动态版本
 
