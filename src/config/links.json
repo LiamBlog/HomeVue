@@ -1,0 +1,14 @@
+[
+  {
+    "type": "Email",
+    "icon": "fas fa-envelope",
+    "url": "mailto:shian04@qq.com",
+    "hoverColor": "#e78b0a"
+  },
+  {
+    "type": "Github",
+    "icon": "fab fa-github",
+    "url": "https://github.com/LiamBlog",
+    "hoverColor": "#6500fc"
+  }
+]

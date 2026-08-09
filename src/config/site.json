@@ -1,1 +1,27 @@
-
+[
+  {
+    "name": "博客",
+    "url": "https://www.mlhh.cn",
+    "icon": "fa fa-blog"
+  },
+  {
+    "name": "导航",
+    "url": "https://nav.mlhh.cn",
+    "icon": "fa fa-cloud "
+  },
+  {
+    "name": "图床",
+    "url": "https://dns.mlhh.cn",
+    "icon": "fa fa-image"
+  },
+  {
+    "name": "工具",
+    "url": "https://fs.n-ov.top",
+    "icon": "fa fa-ghost "
+  },
+  {
+    "name": "监测",
+    "url": "https://status.mlhh.cn",
+    "icon": "fa fa-chart-line"
+  }
+]
