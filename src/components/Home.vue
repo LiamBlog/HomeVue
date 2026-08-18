@@ -62,7 +62,7 @@ const contacts = ref(contactsData);
 const showQR = ref(false);
 const showAbout = ref(false);
 const qrCodeSrc = ref('');
-const profileImage = ref(import.meta.env.VITE_APP_PROFILE_IMAGE_URL || 'https://www.mlhh.cn/img/tx.jpg');
+const profileImage = ref(import.meta.env.VITE_APP_PROFILE_IMAGE_URL || 'https://img.mlhh.cn/file/BQACAgUAAyEGAATjI15nAAOcaoRuEOpKqct2Sp9frfKwN2DNYJwAAjEnAAI0MShUaSGxP90aDTI9BA.jpg');
 const userName = ref(import.meta.env.VITE_APP_USER_NAME || '十安');
 const descriptionElement = ref(null);
 
