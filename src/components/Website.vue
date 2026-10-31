@@ -1,10 +1,10 @@
 <template>
-  <div class="container">
+  <div ref="swiperContainer" class="container">
     <div class="swiper-container">
       <div class="swiper-wrapper">
-        <div v-for="(siteChunk, index) in chunkedSites" :key="index" class="swiper-slide">
+        <div v-for="(siteChunk, index) in chunkedSites" :key="siteChunk[0]?.url || index" class="swiper-slide">
           <div class="site-grid">
-            <a v-for="(site, i) in siteChunk" :key="i" class="site-box" :href="site.url" target="_blank" rel="noopener noreferrer">
+            <a v-for="site in siteChunk" :key="site.url" class="site-box" :href="site.url" target="_blank" rel="noopener noreferrer">
               <span class="site-content">
                 <i :class="site.icon" aria-hidden="true"></i>
                 <span class="site-name">{{ site.name }}</span>
@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import Swiper from 'swiper/bundle';
 import 'swiper/swiper-bundle.css';
 import siteData from '../config/site.json';
@@ -30,14 +30,20 @@ const chunkedSites = ref(siteData.reduce((acc, site, index) => {
   acc[chunkIndex].push(site);
   return acc;
 }, []));
+const swiperContainer = ref(null);
+let swiperInstance = null;
 
 onMounted(() => {
-  new Swiper('.swiper-container', {
+  swiperInstance = new Swiper(swiperContainer.value.querySelector('.swiper-container'), {
     slidesPerView: 1,
     spaceBetween: 20,
-    pagination: { el: '.swiper-pagination', clickable: true },
+    pagination: { el: swiperContainer.value.querySelector('.swiper-pagination'), clickable: true },
     mousewheel: { releaseOnEdges: true },
   });
+});
+
+onUnmounted(() => {
+  swiperInstance?.destroy(true, true);
 });
 </script>
 

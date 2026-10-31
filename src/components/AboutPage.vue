@@ -23,7 +23,7 @@
             <li v-if="loading" class="loading-item">
               <div class="loading-spinner"></div>
             </li>
-            <li v-for="(update, index) in lastUpdates" :key="index" class="update-item">
+            <li v-for="update in lastUpdates" :key="update.id" class="update-item">
               {{ update.message }} <span v-if="update.date"> ({{ update.date }})</span>
             </li>
           </ul>
@@ -52,17 +52,31 @@ const lastUpdates = ref([]);
 const loading = ref(true);
 const closeModal = () => emit('close');
 const fetchCommits = async () => {
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), 8000);
+
   try {
-    const response = await fetch('https://api.github.com/repos/JLinMr/Home-Vue/commits');
+    const response = await fetch('https://api.github.com/repos/JLinMr/Home-Vue/commits', {
+      signal: controller.signal,
+      headers: { Accept: 'application/vnd.github+json' }
+    });
+    if (!response.ok) throw new Error(`GitHub API returned ${response.status}`);
+
     const commits = await response.json();
+    if (!Array.isArray(commits)) throw new Error('Unexpected GitHub API response');
+
     lastUpdates.value = commits.slice(0, 3).map(commit => ({
-      message: commit.commit.message,
-      date: new Date(commit.commit.author.date).toLocaleDateString()
+      id: commit.sha,
+      message: commit.commit?.message?.split('\n')[0] || '无提交说明',
+      date: commit.commit?.author?.date
+        ? new Date(commit.commit.author.date).toLocaleDateString()
+        : ''
     }));
   } catch (error) {
     console.error('获取更新信息失败', error);
-    lastUpdates.value = [{ message: '无法获取更新信息', date: '' }];
+    lastUpdates.value = [{ id: 'error', message: '无法获取更新信息', date: '' }];
   } finally {
+    window.clearTimeout(timeoutId);
     loading.value = false;
   }
 };

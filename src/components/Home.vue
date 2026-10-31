@@ -2,7 +2,9 @@
   <div class="content">
     <div class="user-profile-container">
       <div class="user-profile-image" v-motion-pop>
-        <img :src="profileImage" alt="头像" referrerpolicy="no-referrer" @click.stop="toggleInfo">
+        <button ref="profileButton" type="button" class="profile-button" aria-label="打开关于窗口" @click="toggleInfo">
+          <img :src="profileImage" alt="" referrerpolicy="no-referrer">
+        </button>
         <span class="status-ball"></span>
       </div>
       <div class="user-name" v-motion-slide-left>
@@ -33,17 +35,17 @@
     <VisitTimer />
 
     <Transition name="fade">
-      <div v-if="showAbout" class="overlay" role="dialog" aria-modal="true" aria-label="关于" @click="showAbout = false">
+      <div v-if="showAbout" ref="aboutDialog" class="overlay" role="dialog" aria-modal="true" aria-label="关于" tabindex="-1" @click.self="closeAbout">
         <div class="modal-content">
-          <AboutPage @close="showAbout = false" />
+          <AboutPage @close="closeAbout" />
         </div>
       </div>
     </Transition>
 
     <Transition name="fade">
-      <div v-if="showQR" class="overlay" role="dialog" aria-modal="true" aria-label="二维码" @click="hideQRCode">
+      <div v-if="showQR" ref="qrDialog" class="overlay" role="dialog" aria-modal="true" aria-label="二维码" tabindex="-1" @click.self="hideQRCode">
         <div class="modal-content">
-          <img :src="qrCodeSrc" alt="QR Code" class="qr-image" @click.stop>
+          <img :src="qrCodeSrc" alt="二维码" class="qr-image">
         </div>
       </div>
     </Transition>
@@ -51,7 +53,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue';
 import contactsData from '../config/links.json';
 import Website from './Website.vue';
 import AboutPage from './AboutPage.vue';
@@ -62,6 +64,10 @@ const contacts = ref(contactsData);
 const showQR = ref(false);
 const showAbout = ref(false);
 const qrCodeSrc = ref('');
+const profileButton = ref(null);
+const aboutDialog = ref(null);
+const qrDialog = ref(null);
+const activeDialog = ref(null);
 const profileImage = ref(import.meta.env.VITE_APP_PROFILE_IMAGE_URL || 'https://img.mlhh.cn/file/BQACAgUAAyEGAATjI15nAAOcaoRuEOpKqct2Sp9frfKwN2DNYJwAAjEnAAI0MShUaSGxP90aDTI9BA.jpg');
 const userName = ref(import.meta.env.VITE_APP_USER_NAME || '十安');
 const descriptionElement = ref(null);
@@ -190,6 +196,10 @@ const initializeTyped = () => {
 
 onMounted(() => {
   initializeTyped();
+});
+
+onUnmounted(() => {
+  typedInstance?.destroy();
 });
 
 const toggleQRCode = (qrCode) => {
