@@ -8,6 +8,19 @@
     <meta name="keywords" content="十安の小窝" />
     <meta name="description" content="十安の小窝" />
     <link rel="icon" href="https://img.mlhh.cn/file/BQACAgUAAyEGAATjI15nAAOcaoRuEOpKqct2Sp9frfKwN2DNYJwAAjEnAAI0MShUaSGxP90aDTI9BA.jpg" />
+    <script>
+      try {
+        const savedDarkMode = localStorage.getItem('darkMode');
+        const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (savedDarkMode === 'true' || (savedDarkMode === null && prefersDarkMode)) {
+          document.documentElement.classList.add('dark-mode');
+        }
+      } catch {
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.classList.add('dark-mode');
+        }
+      }
+    </script>
   <!--Umami统计（已内联，避免部署环境缺少 .env 导致构建失败）-->
   <script defer src="https://mlhh.cn" data-website-id="2a70fe42-f442-41ea-8632-05adfc0c8d1f"></script>
   <!-- 引入图标库 -->

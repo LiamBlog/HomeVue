@@ -17,7 +17,7 @@
     </div>
     <div class="contact-section" v-motion-pop>
       <template v-for="contact in contacts" :key="contact.type">
-        <a v-if="contact.url" :href="contact.url" target="_blank" class="contact-item" :style="{ '--hover-color': contact.hoverColor }">
+        <a v-if="contact.url" :href="contact.url" target="_blank" rel="noopener noreferrer" class="contact-item" :style="{ '--hover-color': contact.hoverColor }">
           <i :class="contact.icon"></i>
           <span class="tooltip">{{ contact.type }}</span>
         </a>
@@ -275,23 +275,32 @@ onUnmounted(() => window.removeEventListener('keydown', closeOverlaysOnEsc));
 const isDarkMode = ref(false);
 const darkModeIconClass = ref('fas fa-moon');
 
+const applyDarkMode = (enabled) => {
+  isDarkMode.value = enabled;
+  document.documentElement.classList.toggle('dark-mode', enabled);
+  darkModeIconClass.value = enabled ? 'fas fa-sun' : 'fas fa-moon';
+};
+
 const toggleDarkMode = () => {
-  isDarkMode.value = !isDarkMode.value;
-  document.body.classList.toggle('dark-mode', isDarkMode.value);
-
-  localStorage.setItem('darkMode', isDarkMode.value);
-
-  darkModeIconClass.value = isDarkMode.value ? 'fas fa-sun' : 'fas fa-moon';
+  const enabled = !isDarkMode.value;
+  applyDarkMode(enabled);
+  try {
+    localStorage.setItem('darkMode', String(enabled));
+  } catch {
+    // Theme remains active for this session when storage is unavailable.
+  }
 };
 
 onMounted(() => {
-  const savedDarkMode = localStorage.getItem('darkMode');
-  if (savedDarkMode !== null) {
-    isDarkMode.value = savedDarkMode === 'true';
-    document.body.classList.toggle('dark-mode', isDarkMode.value);
+  let savedDarkMode = null;
+  try {
+    savedDarkMode = localStorage.getItem('darkMode');
+  } catch {
+    // Use the system preference when storage is unavailable.
   }
 
-  darkModeIconClass.value = isDarkMode.value ? 'fas fa-sun' : 'fas fa-moon';
+  const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  applyDarkMode(savedDarkMode === null ? prefersDarkMode : savedDarkMode === 'true');
 });
 </script>
 

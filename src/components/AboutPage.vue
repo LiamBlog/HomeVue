@@ -13,7 +13,7 @@
         </div>
         <div class="github-info">
           <h3>开源地址</h3>
-          <a href="https://github.com/JLinMr/Home-Vue" target="_blank" class="github-link">
+          <a href="https://github.com/JLinMr/Home-Vue" target="_blank" rel="noopener noreferrer" class="github-link">
             <i class="fab fa-github"></i> Github
           </a>
         </div>

@@ -8,14 +8,27 @@
     <meta name="keywords" content="十安の小窝" />
     <meta name="description" content="十安の小窝" />
     <link rel="icon" href="https://img.mlhh.cn/file/BQACAgUAAyEGAATjI15nAAOcaoRuEOpKqct2Sp9frfKwN2DNYJwAAjEnAAI0MShUaSGxP90aDTI9BA.jpg" />
-    <!--Umami统计-->
-    <script defer src="https://mlhh.cn" data-website-id="2a70fe42-f442-41ea-8632-05adfc0c8d1f"></script>
-    <!-- 引入图标库 -->
-    <link rel="stylesheet" href="//lib.baomitu.com/font-awesome/6.5.0/css/all.min.css">
-    <!-- 字体 -->
-    <link rel="stylesheet" href="https://s1.hdslb.com/bfs/static/jinkela/long/font/regular.css">
-    <script type="module" crossorigin src="/assets/index-D3g2pSkn.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-tHLo4NSb.css">
+    <script>
+      try {
+        const savedDarkMode = localStorage.getItem('darkMode');
+        const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (savedDarkMode === 'true' || (savedDarkMode === null && prefersDarkMode)) {
+          document.documentElement.classList.add('dark-mode');
+        }
+      } catch {
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.classList.add('dark-mode');
+        }
+      }
+    </script>
+  <!--Umami统计（已内联，避免部署环境缺少 .env 导致构建失败）-->
+  <script defer src="https://mlhh.cn" data-website-id="2a70fe42-f442-41ea-8632-05adfc0c8d1f"></script>
+  <!-- 引入图标库 -->
+  <link rel="stylesheet" href="//lib.baomitu.com/font-awesome/6.5.0/css/all.min.css">
+  <!-- 字体（全局已切换为本地 YSHST，此处保留原外部字体样式以兼容旧类） -->
+  <link rel="stylesheet" href="https://s1.hdslb.com/bfs/static/jinkela/long/font/regular.css">
+    <script type="module" crossorigin src="/assets/index--2hssAXz.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-Da-r0OST.css">
   </head>
   <body>
     <div id="app"></div>
