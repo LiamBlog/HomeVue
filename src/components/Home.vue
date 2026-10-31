@@ -53,7 +53,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue';
+import { ref, onMounted, onUnmounted, nextTick } from 'vue';
 import contactsData from '../config/links.json';
 import Website from './Website.vue';
 import AboutPage from './AboutPage.vue';
@@ -67,7 +67,7 @@ const qrCodeSrc = ref('');
 const profileButton = ref(null);
 const aboutDialog = ref(null);
 const qrDialog = ref(null);
-const activeDialog = ref(null);
+const lastFocusedElement = ref(null);
 const profileImage = ref(import.meta.env.VITE_APP_PROFILE_IMAGE_URL || 'https://img.mlhh.cn/file/BQACAgUAAyEGAATjI15nAAOcaoRuEOpKqct2Sp9frfKwN2DNYJwAAjEnAAI0MShUaSGxP90aDTI9BA.jpg');
 const userName = ref(import.meta.env.VITE_APP_USER_NAME || '十安');
 const descriptionElement = ref(null);
@@ -202,23 +202,71 @@ onUnmounted(() => {
   typedInstance?.destroy();
 });
 
+const focusDialog = async (dialogRef) => {
+  await nextTick();
+  dialogRef.value?.focus();
+};
+
+const rememberFocus = () => {
+  lastFocusedElement.value = document.activeElement;
+};
+
+const restoreFocus = () => {
+  lastFocusedElement.value?.focus?.();
+  lastFocusedElement.value = null;
+};
+
 const toggleQRCode = (qrCode) => {
-  qrCodeSrc.value = qrCode || '';
-  showQR.value = !showQR.value;
+  if (!qrCode) return;
+  rememberFocus();
+  qrCodeSrc.value = qrCode;
+  showQR.value = true;
+  focusDialog(qrDialog);
 };
 
 const hideQRCode = () => {
   showQR.value = false;
+  restoreFocus();
 };
 
 const toggleInfo = () => {
-  showAbout.value = !showAbout.value;
+  if (showAbout.value) {
+    closeAbout();
+    return;
+  }
+  rememberFocus();
+  showAbout.value = true;
+  focusDialog(aboutDialog);
+};
+
+const closeAbout = () => {
+  showAbout.value = false;
+  restoreFocus();
 };
 
 const closeOverlaysOnEsc = (event) => {
+  const dialog = aboutDialog.value || qrDialog.value;
+  if (!dialog) return;
+
   if (event.key === 'Escape') {
     showAbout.value = false;
     showQR.value = false;
+    restoreFocus();
+    return;
+  }
+
+  if (event.key !== 'Tab') return;
+  const focusable = [...dialog.querySelectorAll('button, a, [tabindex]:not([tabindex="-1"])')];
+  if (!focusable.length) return;
+
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
   }
 };
 
@@ -273,6 +321,20 @@ onMounted(() => {
     padding: 5px;
     border: 3px solid var(--border-color);
     position: relative;
+
+    .profile-button {
+      display: flex;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: none;
+      cursor: pointer;
+
+      &:focus-visible {
+        outline: 2px solid var(--hover-link-color);
+        outline-offset: 4px;
+      }
+    }
 
     img {
       width: 150px;
