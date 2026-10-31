@@ -64,7 +64,6 @@ const contacts = ref(contactsData);
 const showQR = ref(false);
 const showAbout = ref(false);
 const qrCodeSrc = ref('');
-const profileButton = ref(null);
 const aboutDialog = ref(null);
 const qrDialog = ref(null);
 const lastFocusedElement = ref(null);
