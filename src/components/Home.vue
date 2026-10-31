@@ -2,7 +2,9 @@
   <div class="content">
     <div class="user-profile-container">
       <div class="user-profile-image" v-motion-pop>
-        <img :src="profileImage" alt="头像" referrerpolicy="no-referrer" @click.stop="toggleInfo">
+        <button ref="profileButton" type="button" class="profile-button" aria-label="打开关于窗口" @click="toggleInfo">
+          <img :src="profileImage" alt="" referrerpolicy="no-referrer">
+        </button>
         <span class="status-ball"></span>
       </div>
       <div class="user-name" v-motion-slide-left>
@@ -33,17 +35,17 @@
     <VisitTimer />
 
     <Transition name="fade">
-      <div v-if="showAbout" class="overlay" role="dialog" aria-modal="true" aria-label="关于" @click="showAbout = false">
+      <div v-if="showAbout" ref="aboutDialog" class="overlay" role="dialog" aria-modal="true" aria-label="关于" tabindex="-1" @click.self="closeAbout">
         <div class="modal-content">
-          <AboutPage @close="showAbout = false" />
+          <AboutPage @close="closeAbout" />
         </div>
       </div>
     </Transition>
 
     <Transition name="fade">
-      <div v-if="showQR" class="overlay" role="dialog" aria-modal="true" aria-label="二维码" @click="hideQRCode">
+      <div v-if="showQR" ref="qrDialog" class="overlay" role="dialog" aria-modal="true" aria-label="二维码" tabindex="-1" @click.self="hideQRCode">
         <div class="modal-content">
-          <img :src="qrCodeSrc" alt="QR Code" class="qr-image" @click.stop>
+          <img :src="qrCodeSrc" alt="二维码" class="qr-image">
         </div>
       </div>
     </Transition>
@@ -51,7 +53,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, nextTick } from 'vue';
 import contactsData from '../config/links.json';
 import Website from './Website.vue';
 import AboutPage from './AboutPage.vue';
@@ -62,6 +64,9 @@ const contacts = ref(contactsData);
 const showQR = ref(false);
 const showAbout = ref(false);
 const qrCodeSrc = ref('');
+const aboutDialog = ref(null);
+const qrDialog = ref(null);
+const lastFocusedElement = ref(null);
 const profileImage = ref(import.meta.env.VITE_APP_PROFILE_IMAGE_URL || 'https://img.mlhh.cn/file/BQACAgUAAyEGAATjI15nAAOcaoRuEOpKqct2Sp9frfKwN2DNYJwAAjEnAAI0MShUaSGxP90aDTI9BA.jpg');
 const userName = ref(import.meta.env.VITE_APP_USER_NAME || '十安');
 const descriptionElement = ref(null);
@@ -192,23 +197,75 @@ onMounted(() => {
   initializeTyped();
 });
 
+onUnmounted(() => {
+  typedInstance?.destroy();
+});
+
+const focusDialog = async (dialogRef) => {
+  await nextTick();
+  dialogRef.value?.focus();
+};
+
+const rememberFocus = () => {
+  lastFocusedElement.value = document.activeElement;
+};
+
+const restoreFocus = () => {
+  lastFocusedElement.value?.focus?.();
+  lastFocusedElement.value = null;
+};
+
 const toggleQRCode = (qrCode) => {
-  qrCodeSrc.value = qrCode || '';
-  showQR.value = !showQR.value;
+  if (!qrCode) return;
+  rememberFocus();
+  qrCodeSrc.value = qrCode;
+  showQR.value = true;
+  focusDialog(qrDialog);
 };
 
 const hideQRCode = () => {
   showQR.value = false;
+  restoreFocus();
 };
 
 const toggleInfo = () => {
-  showAbout.value = !showAbout.value;
+  if (showAbout.value) {
+    closeAbout();
+    return;
+  }
+  rememberFocus();
+  showAbout.value = true;
+  focusDialog(aboutDialog);
+};
+
+const closeAbout = () => {
+  showAbout.value = false;
+  restoreFocus();
 };
 
 const closeOverlaysOnEsc = (event) => {
+  const dialog = aboutDialog.value || qrDialog.value;
+  if (!dialog) return;
+
   if (event.key === 'Escape') {
     showAbout.value = false;
     showQR.value = false;
+    restoreFocus();
+    return;
+  }
+
+  if (event.key !== 'Tab') return;
+  const focusable = [...dialog.querySelectorAll('button, a, [tabindex]:not([tabindex="-1"])')];
+  if (!focusable.length) return;
+
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
   }
 };
 
@@ -263,6 +320,20 @@ onMounted(() => {
     padding: 5px;
     border: 3px solid var(--border-color);
     position: relative;
+
+    .profile-button {
+      display: flex;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: none;
+      cursor: pointer;
+
+      &:focus-visible {
+        outline: 2px solid var(--hover-link-color);
+        outline-offset: 4px;
+      }
+    }
 
     img {
       width: 150px;

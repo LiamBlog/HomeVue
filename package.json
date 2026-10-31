@@ -11,12 +11,12 @@
   "dependencies": {
     "@vueuse/motion": "^2.2.5",
     "less": "^4.2.0",
-    "swiper": "^11.1.14",
+    "swiper": "14.4.0",
     "typed.js": "^2.1.0",
     "vue": "^3.4.37"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.1.4",
-    "vite": "^5.4.1"
+    "@vitejs/plugin-vue": "^6.0.10",
+    "vite": "^8.3.5"
   }
 }
