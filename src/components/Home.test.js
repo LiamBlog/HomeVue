@@ -1,11 +1,13 @@
 // @vitest-environment jsdom
 import { mount, flushPromises } from '@vue/test-utils';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import Home from './Home.vue';
 
-const typedDestroy = vi.fn();
+const { typedDestroy } = vi.hoisted(() => ({ typedDestroy: vi.fn() }));
 vi.mock('typed.js', () => ({
-  default: vi.fn().mockImplementation(() => ({ destroy: typedDestroy })),
+  default: vi.fn(function MockTyped() {
+    this.destroy = typedDestroy;
+  }),
 }));
 vi.mock('./Website.vue', () => ({ default: { template: '<div />' } }));
 vi.mock('./VisitTimer.vue', () => ({ default: { template: '<div />' } }));
@@ -16,14 +18,23 @@ vi.mock('./AboutPage.vue', () => ({
   },
 }));
 
-const mountHome = () => mount(Home, {
-  global: {
-    directives: {
-      'motion-pop': {},
-      'motion-slide-left': {},
-    },
-  },
+let wrapper;
+
+afterEach(() => {
+  wrapper?.unmount();
 });
+
+const mountHome = () => {
+  return wrapper = mount(Home, {
+    attachTo: document.body,
+    global: {
+      directives: {
+        'motion-pop': {},
+        'motion-slide-left': {},
+      },
+    },
+  });
+};
 
 describe('Home interactions', () => {
   beforeEach(() => {
