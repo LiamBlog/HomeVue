@@ -1,19 +1,36 @@
 <template>
-  <div ref="swiperContainer" class="container">
+  <div
+    ref="swiperContainer"
+    class="container"
+  >
     <div class="swiper-container">
       <div class="swiper-wrapper">
-        <div v-for="(siteChunk, index) in chunkedSites" :key="siteChunk[0]?.url || index" class="swiper-slide">
+        <div
+          v-for="(siteChunk, index) in chunkedSites"
+          :key="siteChunk[0]?.url || index"
+          class="swiper-slide"
+        >
           <div class="site-grid">
-            <a v-for="site in siteChunk" :key="site.url" class="site-box" :href="site.url" target="_blank" rel="noopener noreferrer">
+            <a
+              v-for="site in siteChunk"
+              :key="site.url"
+              class="site-box"
+              :href="site.url"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <span class="site-content">
-                <i :class="site.icon" aria-hidden="true"></i>
+                <i
+                  :class="site.icon"
+                  aria-hidden="true"
+                />
                 <span class="site-name">{{ site.name }}</span>
               </span>
             </a>
           </div>
         </div>
       </div>
-      <div class="swiper-pagination"></div>
+      <div class="swiper-pagination" />
     </div>
   </div>
 </template>

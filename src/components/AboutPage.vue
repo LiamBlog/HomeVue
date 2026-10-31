@@ -1,36 +1,60 @@
 <template>
-  <div class="about-page" @click.stop>
+  <div
+    class="about-page"
+    @click.stop
+  >
     <div class="about-modal">
       <div class="about-modal-content">
         <div class="tech-stack">
           <h3>使用的技术栈</h3>
           <ul class="tech-list">
-            <li v-for="tech in techStack" :key="tech.name" :class="['tech-item', tech.name.toLowerCase()]">
-              <i :class="tech.icon"></i>
+            <li
+              v-for="tech in techStack"
+              :key="tech.name"
+              :class="['tech-item', tech.name.toLowerCase()]"
+            >
+              <i :class="tech.icon" />
               {{ tech.name }}
             </li>
           </ul>
         </div>
         <div class="github-info">
           <h3>开源地址</h3>
-          <a href="https://github.com/JLinMr/Home-Vue" target="_blank" rel="noopener noreferrer" class="github-link">
-            <i class="fab fa-github"></i> Github
+          <a
+            href="https://github.com/JLinMr/Home-Vue"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="github-link"
+          >
+            <i class="fab fa-github" /> Github
           </a>
         </div>
         <div class="update-info">
           <h3>最近更新</h3>
           <ul class="update-list">
-            <li v-if="loading" class="loading-item">
-              <div class="loading-spinner"></div>
+            <li
+              v-if="loading"
+              class="loading-item"
+            >
+              <div class="loading-spinner" />
             </li>
-            <li v-for="update in lastUpdates" :key="update.id" class="update-item">
+            <li
+              v-for="update in lastUpdates"
+              :key="update.id"
+              class="update-item"
+            >
               {{ update.message }} <span v-if="update.date"> ({{ update.date }})</span>
             </li>
           </ul>
         </div>
       </div>
-      <button type="button" @click="closeModal" class="close-btn" aria-label="关闭关于窗口">
-        <i class="fas fa-times"></i>
+      <button
+        type="button"
+        class="close-btn"
+        aria-label="关闭关于窗口"
+        @click="closeModal"
+      >
+        <i class="fas fa-times" />
       </button>
     </div>
   </div>

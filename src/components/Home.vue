@@ -1,33 +1,75 @@
 <template>
   <div class="content">
     <div class="user-profile-container">
-      <div class="user-profile-image" v-motion-pop>
-        <button ref="profileButton" type="button" class="profile-button" aria-label="打开关于窗口" @click="toggleInfo">
-          <img :src="profileImage" alt="" referrerpolicy="no-referrer">
+      <div
+        v-motion-pop
+        class="user-profile-image"
+      >
+        <button
+          ref="profileButton"
+          type="button"
+          class="profile-button"
+          aria-label="打开关于窗口"
+          @click="toggleInfo"
+        >
+          <img
+            :src="profileImage"
+            alt=""
+            referrerpolicy="no-referrer"
+          >
         </button>
-        <span class="status-ball"></span>
+        <span class="status-ball" />
       </div>
-      <div class="user-name" v-motion-slide-left>
+      <div
+        v-motion-slide-left
+        class="user-name"
+      >
         <h1>Hi,</h1>
         <h1>I'm <span class="name-style">{{ userName }}</span></h1>
       </div>
     </div>
     <div class="description">
-      <p ref="descriptionElement"></p>
+      <p ref="descriptionElement" />
     </div>
-    <div class="contact-section" v-motion-pop>
-      <template v-for="contact in contacts" :key="contact.type">
-        <a v-if="contact.url" :href="contact.url" target="_blank" rel="noopener noreferrer" class="contact-item" :style="{ '--hover-color': contact.hoverColor }">
-          <i :class="contact.icon"></i>
+    <div
+      v-motion-pop
+      class="contact-section"
+    >
+      <template
+        v-for="contact in contacts"
+        :key="contact.type"
+      >
+        <a
+          v-if="contact.url"
+          :href="contact.url"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="contact-item"
+          :style="{ '--hover-color': contact.hoverColor }"
+        >
+          <i :class="contact.icon" />
           <span class="tooltip">{{ contact.type }}</span>
         </a>
-        <button v-else type="button" @click="toggleQRCode(contact.qrCode)" class="contact-item" :style="{ '--hover-color': contact.hoverColor }" :aria-label="contact.type">
-          <i :class="contact.icon"></i>
+        <button
+          v-else
+          type="button"
+          class="contact-item"
+          :style="{ '--hover-color': contact.hoverColor }"
+          :aria-label="contact.type"
+          @click="toggleQRCode(contact.qrCode)"
+        >
+          <i :class="contact.icon" />
           <span class="tooltip">{{ contact.type }}</span>
         </button>
       </template>
-      <button type="button" class="contact-item" @click="toggleDarkMode" :style="{ '--hover-color': isDarkMode ? '#ffcc00' : '#666' }" :aria-label="isDarkMode ? '切换到浅色模式' : '切换到深色模式'">
-        <i :class="darkModeIconClass"></i>
+      <button
+        type="button"
+        class="contact-item"
+        :style="{ '--hover-color': isDarkMode ? '#ffcc00' : '#666' }"
+        :aria-label="isDarkMode ? '切换到浅色模式' : '切换到深色模式'"
+        @click="toggleDarkMode"
+      >
+        <i :class="darkModeIconClass" />
         <span class="tooltip">{{ isDarkMode ? '浅色' : '深色' }}</span>
       </button>
     </div>
@@ -35,7 +77,16 @@
     <VisitTimer />
 
     <Transition name="fade">
-      <div v-if="showAbout" ref="aboutDialog" class="overlay" role="dialog" aria-modal="true" aria-label="关于" tabindex="-1" @click.self="closeAbout">
+      <div
+        v-if="showAbout"
+        ref="aboutDialog"
+        class="overlay"
+        role="dialog"
+        aria-modal="true"
+        aria-label="关于"
+        tabindex="-1"
+        @click.self="closeAbout"
+      >
         <div class="modal-content">
           <AboutPage @close="closeAbout" />
         </div>
@@ -43,9 +94,22 @@
     </Transition>
 
     <Transition name="fade">
-      <div v-if="showQR" ref="qrDialog" class="overlay" role="dialog" aria-modal="true" aria-label="二维码" tabindex="-1" @click.self="hideQRCode">
+      <div
+        v-if="showQR"
+        ref="qrDialog"
+        class="overlay"
+        role="dialog"
+        aria-modal="true"
+        aria-label="二维码"
+        tabindex="-1"
+        @click.self="hideQRCode"
+      >
         <div class="modal-content">
-          <img :src="qrCodeSrc" alt="二维码" class="qr-image">
+          <img
+            :src="qrCodeSrc"
+            alt="二维码"
+            class="qr-image"
+          >
         </div>
       </div>
     </Transition>
