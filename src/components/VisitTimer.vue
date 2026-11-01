@@ -1,46 +1,63 @@
 <template>
   <div class="visit-timer-container">
-    <button type="button" class="visit-timer" 
-         v-motion
-         :initial="{ opacity: 0, y: 50, x: '-50%', scale: 0.5 }"
-         :enter="{ opacity: 1, y: 0, x: '-50%', scale: 1, transition: { duration: 300 } }"
-         @mouseenter="handleMouseEnter"
-         @mouseleave="handleMouseLeave"
-         @focus="handleMouseEnter"
-         @blur="handleMouseLeave"
-         @click="toggleCalendar"
-         :aria-expanded="showCalendar"
-         aria-label="查看当前日期和停留时间">
+    <button
+      v-motion
+      type="button" 
+      class="visit-timer"
+      :initial="{ opacity: 0, y: 50, x: '-50%', scale: 0.5 }"
+      :enter="{ opacity: 1, y: 0, x: '-50%', scale: 1, transition: { duration: 300 } }"
+      :aria-expanded="showCalendar"
+      aria-label="查看当前日期和停留时间"
+      @mouseenter="handleMouseEnter"
+      @mouseleave="handleMouseLeave"
+      @focus="handleMouseEnter"
+      @blur="handleMouseLeave"
+      @click="toggleCalendar"
+    >
       <div class="timer-content">
-        <i class="fas fa-clock"></i>
+        <i class="fas fa-clock" />
         <span>停留时间 : </span>
         <div class="time">
-          <template v-for="(value, unit) in timeUnits" :key="unit">
+          <template
+            v-for="(value, unit) in timeUnits"
+            :key="unit"
+          >
             <div class="time-wrapper">
               <Transition name="flip">
-                <span :key="value" class="time-unit">{{ value }}</span>
+                <span
+                  :key="value"
+                  class="time-unit"
+                >{{ value }}</span>
               </Transition>
             </div>
-            <span v-if="unit !== 'seconds'" class="separator">:</span>
+            <span
+              v-if="unit !== 'seconds'"
+              class="separator"
+            >:</span>
           </template>
         </div>
       </div>
     </button>
 
     <Transition name="calendar">
-      <div v-if="showCalendar" 
-           class="calendar-popup"
-           @mouseleave="handleMouseLeave">
+      <div
+        v-if="showCalendar" 
+        class="calendar-popup"
+        @mouseleave="handleMouseLeave"
+      >
         <div class="calendar-header">
-          <i class="fas fa-calendar-alt"></i>
+          <i class="fas fa-calendar-alt" />
           {{ dateTime.dateOnly }}
         </div>
         <div class="calendar-time">
-          <i class="fas fa-clock"></i>
+          <i class="fas fa-clock" />
           <span>{{ dateTime.weekday }}</span>
           <span>{{ dateTime.timeWithoutSeconds }}</span>
-          <span v-if="isCalendarPinned" class="pin-indicator">
-            <i class="fas fa-thumbtack"></i>
+          <span
+            v-if="isCalendarPinned"
+            class="pin-indicator"
+          >
+            <i class="fas fa-thumbtack" />
           </span>
         </div>
       </div>

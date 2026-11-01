@@ -1,19 +1,37 @@
 <template>
   <div class="app-container">
-    <div class="background"></div>
+    <div class="background" />
     <main class="main-content">
       <Home />
     </main>
     <footer>
       <div class="footer-content">
-        <span class="footer-item">© {{ currentYear }} Made in <a href="https://mlhh.cn" target="_blank" rel="noopener noreferrer">十安</a></span>
+        <span class="footer-item">© {{ currentYear }} Made in <a
+          href="https://mlhh.cn"
+          target="_blank"
+          rel="noopener noreferrer"
+        >十安</a></span>
         <span class="footer-separator">|</span>
-        <a href="https://icp.gov.moe/?keyword=20240301" target="_blank" rel="noopener noreferrer">萌ICP备20240301号</a>
+        <a
+          href="https://icp.gov.moe/?keyword=20240301"
+          target="_blank"
+          rel="noopener noreferrer"
+        >萌ICP备20240301号</a>
         <span class="footer-separator">|</span>
-        <a class="footer-item" href="https://cloud.tencent.com/act/pro/eo-freeplan?ad_trace=3fe11a4b31634407819b427b61a2b768&from=28455&from-column=28455" target="_blank" rel="noopener noreferrer">腾讯云边缘安全加速EdgeOne</a>
+        <a
+          class="footer-item"
+          href="https://cloud.tencent.com/act/pro/eo-freeplan?ad_trace=3fe11a4b31634407819b427b61a2b768&from=28455&from-column=28455"
+          target="_blank"
+          rel="noopener noreferrer"
+        >腾讯云边缘安全加速EdgeOne</a>
         <span class="footer-text">(国内)提供强劲加速</span>
         <span class="footer-separator">|</span>
-        <a class="footer-item" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">{{ icpNumber }}</a>
+        <a
+          class="footer-item"
+          href="https://beian.miit.gov.cn/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >{{ icpNumber }}</a>
       </div>
     </footer>
   </div>

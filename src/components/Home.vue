@@ -1,33 +1,75 @@
 <template>
   <div class="content">
     <div class="user-profile-container">
-      <div class="user-profile-image" v-motion-pop>
-        <button ref="profileButton" type="button" class="profile-button" aria-label="打开关于窗口" @click="toggleInfo">
-          <img :src="profileImage" alt="" referrerpolicy="no-referrer">
+      <div
+        v-motion-pop
+        class="user-profile-image"
+      >
+        <button
+          ref="profileButton"
+          type="button"
+          class="profile-button"
+          aria-label="打开关于窗口"
+          @click="toggleInfo"
+        >
+          <img
+            :src="profileImage"
+            alt=""
+            referrerpolicy="no-referrer"
+          >
         </button>
-        <span class="status-ball"></span>
+        <span class="status-ball" />
       </div>
-      <div class="user-name" v-motion-slide-left>
+      <div
+        v-motion-slide-left
+        class="user-name"
+      >
         <h1>Hi,</h1>
         <h1>I'm <span class="name-style">{{ userName }}</span></h1>
       </div>
     </div>
     <div class="description">
-      <p ref="descriptionElement"></p>
+      <p ref="descriptionElement" />
     </div>
-    <div class="contact-section" v-motion-pop>
-      <template v-for="contact in contacts" :key="contact.type">
-        <a v-if="contact.url" :href="contact.url" target="_blank" rel="noopener noreferrer" class="contact-item" :style="{ '--hover-color': contact.hoverColor }">
-          <i :class="contact.icon"></i>
+    <div
+      v-motion-pop
+      class="contact-section"
+    >
+      <template
+        v-for="contact in contacts"
+        :key="contact.type"
+      >
+        <a
+          v-if="contact.url"
+          :href="contact.url"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="contact-item"
+          :style="{ '--hover-color': contact.hoverColor }"
+        >
+          <i :class="contact.icon" />
           <span class="tooltip">{{ contact.type }}</span>
         </a>
-        <button v-else type="button" @click="toggleQRCode(contact.qrCode)" class="contact-item" :style="{ '--hover-color': contact.hoverColor }" :aria-label="contact.type">
-          <i :class="contact.icon"></i>
+        <button
+          v-else
+          type="button"
+          class="contact-item"
+          :style="{ '--hover-color': contact.hoverColor }"
+          :aria-label="contact.type"
+          @click="toggleQRCode(contact.qrCode)"
+        >
+          <i :class="contact.icon" />
           <span class="tooltip">{{ contact.type }}</span>
         </button>
       </template>
-      <button type="button" class="contact-item" @click="toggleDarkMode" :style="{ '--hover-color': isDarkMode ? '#ffcc00' : '#666' }" :aria-label="isDarkMode ? '切换到浅色模式' : '切换到深色模式'">
-        <i :class="darkModeIconClass"></i>
+      <button
+        type="button"
+        class="contact-item"
+        :style="{ '--hover-color': isDarkMode ? '#ffcc00' : '#666' }"
+        :aria-label="isDarkMode ? '切换到浅色模式' : '切换到深色模式'"
+        @click="toggleDarkMode"
+      >
+        <i :class="darkModeIconClass" />
         <span class="tooltip">{{ isDarkMode ? '浅色' : '深色' }}</span>
       </button>
     </div>
@@ -35,7 +77,16 @@
     <VisitTimer />
 
     <Transition name="fade">
-      <div v-if="showAbout" ref="aboutDialog" class="overlay" role="dialog" aria-modal="true" aria-label="关于" tabindex="-1" @click.self="closeAbout">
+      <div
+        v-if="showAbout"
+        ref="aboutDialog"
+        class="overlay"
+        role="dialog"
+        aria-modal="true"
+        aria-label="关于"
+        tabindex="-1"
+        @click.self="closeAbout"
+      >
         <div class="modal-content">
           <AboutPage @close="closeAbout" />
         </div>
@@ -43,9 +94,22 @@
     </Transition>
 
     <Transition name="fade">
-      <div v-if="showQR" ref="qrDialog" class="overlay" role="dialog" aria-modal="true" aria-label="二维码" tabindex="-1" @click.self="hideQRCode">
+      <div
+        v-if="showQR"
+        ref="qrDialog"
+        class="overlay"
+        role="dialog"
+        aria-modal="true"
+        aria-label="二维码"
+        tabindex="-1"
+        @click.self="hideQRCode"
+      >
         <div class="modal-content">
-          <img :src="qrCodeSrc" alt="二维码" class="qr-image">
+          <img
+            :src="qrCodeSrc"
+            alt="二维码"
+            class="qr-image"
+          >
         </div>
       </div>
     </Transition>
@@ -53,14 +117,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, nextTick } from 'vue';
-import contactsData from '../config/links.json';
+import { computed, ref, onMounted, onUnmounted, nextTick } from 'vue';
+import contacts from '../config/links.json';
+import predefinedDescriptions from '../config/descriptions.json';
 import Website from './Website.vue';
 import AboutPage from './AboutPage.vue';
 import VisitTimer from './VisitTimer.vue';
 import Typed from 'typed.js';
 
-const contacts = ref(contactsData);
 const showQR = ref(false);
 const showAbout = ref(false);
 const qrCodeSrc = ref('');
@@ -70,115 +134,6 @@ const lastFocusedElement = ref(null);
 const profileImage = ref(import.meta.env.VITE_APP_PROFILE_IMAGE_URL || 'https://img.mlhh.cn/file/BQACAgUAAyEGAATjI15nAAOcaoRuEOpKqct2Sp9frfKwN2DNYJwAAjEnAAI0MShUaSGxP90aDTI9BA.jpg');
 const userName = ref(import.meta.env.VITE_APP_USER_NAME || '十安');
 const descriptionElement = ref(null);
-
-const predefinedDescriptions = [
-  "你好鸭，欢迎来到我的主页！！",
-  "随时可以联系我，期待与你交流。",
-  "愿你历尽千帆，归来仍是少年。",
-  "梦想还是要有的，万一实现了呢？",
-  "心简单，世界就简单，幸福才会生长；心自由，生活就自由，到哪都有快乐。",
-  "生命太短，没有时间留给遗憾，若不是终点，请微笑一直向前。",
-  "唯有你的光辉，像漫过山岭的薄雾，像和风从静谧的世界里带来的夜曲，像朗照溪水的月色扑面而来。",
-  "慢品人间烟火色，闲观万事岁月长。",
-  "万河归海，终会相遇。",
-  "错过了落日余晖，还可以静待满天繁星。",
-  "世界，美丽易碎，不必慌乱，只要静然于心，就会海阔天空。",
-  "自由散漫的凉风，能治愈乱糟糟的坏心情。",
-  "愿你内心山河壮阔，始终相信人间值得。",
-  "花一定是送给别人吗？抛硬币一定需要结果吗？我追的一定是黄昏吗？",
-  "春来夏往，秋收冬藏，我们来日方长。",
-  "每一次日落都是太阳留给天空的温柔。",
-  "晚风轻踩着云朵，月亮在贩售快乐，你从银河背后靠近我，我与星辉一同为你沉沦。",
-  "离别是人间常态，相逢才是意外。",
-  "日子甜甜的，像清晨的柠檬水，像冬日的太阳，像梦里的大海，像第一次遇见你。",
-  "哪来的天生优秀，都是一步一个坑踩过来的。",
-  "总要尝遍所有的路，在对生活充满期待。",
-  "你未必万丈光芒，但你温暖有光。",
-  "种自己的花，爱自己的宇宙。",
-  "对于喜欢的事情，都要全力以赴的努力做到最好。",
-  "因为心中有梦，所以暗里有光，遥遥无期，那又怎样，踮起脚尖，就更接近阳光。",
-  "别灰心，普普通通的你也值得万般宠溺。",
-  "生活总是来来往往，千万别等来日方长。",
-  "你的眸是深情的海，满山的花，堕落了我所有的温情。",
-  "不能输给月亮，我也要一直发光发亮。",
-  "在广袤的空间和无限的时间中，能与你共享同一颗行星和同一段时光是我的荣幸。",
-  "如果觉得身边的一切都太不如意，那就去见喜欢的人，做喜欢的事，买喜欢的东西。",
-  "借一把清风吹开阴霾，接一碗烈酒谈笑风生。",
-  "坐看庭前花开花落，笑看天边云卷云舒。",
-  "你不要着急，你先去读你的书，我去看我的电影，总有一天，我们会窝在一起，读同一本书，看同一部电影。",
-  "要珍惜的人很多，你在其中名列前茅。",
-  "对待自己温柔一点，你只不过是宇宙的孩子，与植物、星辰没什么两样。",
-  "热爱可抵岁月漫长，温柔可挡艰难时光。",
-  "宇宙山河烂漫，人间点滴温暖都值得我前进。",
-  "不要难过，人的运势就像天上的月亮一样，此消彼长，缺了的部分，还会圆回来。",
-  "爱这世间，草木如书，爱这岁月，素静如湖。",
-  "星星醉酒到处跑，月亮跌进深海里，我以前从未觉得人间美好的，直到你来了。",
-  "阳光的酒调得很淡，却很醇，浅浅地斟在每一个杯型的小野花里。",
-  "能打动人的从来不是花言巧语，而是恰到好处的温柔以及真挚的内心。",
-  "听风八百遍，才知是人间。",
-  "跟这个世界交手的许多年来，你是否，光彩依旧，兴趣盎然。",
-  "独自走过苍苍莽莽，与你同行才有了光。",
-  "你所看到的惊艳，都曾被平庸历练。",
-  "我们坠落，破碎，掉入深渊，但我们终会被托起，被治愈，我们无所畏惧。",
-  "只是为了更好的遇见，才赠予了距离和时间。那一天值得等待，那一眼满载星海。",
-  "迟来的阳光不会拯救凋零的花，但花一定会再次开放。",
-  "脚踩在淤泥里，担心要向光明。",
-  "远处的云雾轻拂过黛山，橘黄的日落点缀其间，有风经过，停在窗边。这些美好的事物在一瞬间通通向我奔来，嘱咐我要热爱这个世界。",
-  "我用执着烧毁了所有的幼稚与任性，那片荒野慢慢长出了理智和清醒。",
-  "岁月这东西是要把人变成各种样子的。",
-  "成熟的人，不问过去，聪明的人，不问现在，豁达的人，不问未来。",
-  "你我之间隔着千山万水，我种下一缕思念，愿思念长成树，开满花，花随着风，飘向最美的你，你闻着花香，我想着你，如此，甚好。",
-  "你很好，不要总觉得自己不好，我希望有一天你能和内心的自己真正和解，不要让表象和内心互相打架了，放轻松一点。",
-  "过去的一切你都无法改变，这是基本的物理原理。",
-  "人安静的生活，哪怕是静静地听着风声，亦能感受到诗意的生活。",
-  "人间的事，只要生机不灭，即使重遭天灾人祸，暂被阻抑，终有抬头的日子。",
-  "山高自有碧云时，月圆总有盈亏时。",
-  "我深怕自己本非美玉，故而不敢加以刻苦琢磨；却又半信自己是块美玉，故又不肯庸庸碌碌，与瓦砾为伍。",
-  "我们能做的，是从失望中看到希望。真正的乐观，不是因为没见过世界的黑暗，恰恰是因为见过，才懂得生活的珍贵。",
-  "世间多少纷扰事，浮华落尽总随风。",
-  "时间并不是解药，但时间里藏着解药。",
-  "与理想平等交易，同喧嚣保持距离。",
-  "前方的风景很好，我的意思是别回头。",
-  "没有销声匿迹，我在热爱生活。",
-  "天总会亮的，没有太阳也会。",
-  "总有人间一两风，填我十万八千梦。",
-  "然而生活辽阔，不要只活在爱恨里。",
-  "岁月无波澜，余生不悲欢。",
-  "在谷底也要开花，在海底也要望月。",
-  "在这个夏天和更好的自己见面。",
-  "穿自己喜欢的衣服，和不累的人相处。",
-  "日子好长，充满希望。",
-  "乐观和爱才是生活的解药。",
-  "那就在一起，黄昏与四季。",
-  "要相信美好的都在路上。",
-  "我们在黑暗中并肩前行。",
-  "想让每个平凡的日子溢出欢喜。",
-  "希望不辜负理想也不辜负热爱。",
-  "要在快乐的年纪活的精彩且迷人。",
-  "寂静消散，曙光暗涌，都奔向白昼。",
-  "最大的心安是：自律温柔和爱自己。",
-  "生活总会难过，但好运也会如期而至。",
-  "平凡且认真的生活总会变得可爱。",
-  "生活给你苦难，其实是在铺垫浪漫。",
-  "我频繁的记录着，因为生活很值得。",
-  "愿所有美好的事物都奔向我们而来。",
-  "岁月迢迢，我们总要有一往无前的力量。",
-  "做一个温柔的人，永远不卑不亢清澈善良。",
-  "一旦热爱生活，生活就会教你治愈一切的魔法。",
-  "会有遗憾的时候，也会有完满的一天，不必担心。",
-  "好的坏的我们都收下吧，然后一声不响继续生活。",
-  "努力向上才更开心也更滚烫。",
-  "所有缝隙都是光照进来的方向。",
-  "努力经营当下，直至未来明朗。",
-  "路还长，温柔的事一定会发生。",
-  "把温柔碾碎，放入生活的缝隙中。",
-  "记得向前看，别烂在过去和梦里。",
-  "银河撑不起理想，却有温柔和力量。",
-  "要在谴倦不尽的爱意里勇敢地生活。",
-  "一定要站在你所热爱的世界里闪闪发光！",
-  "因为有了人海，相遇才会显得那么意外。",
-  "I hope you have a happy day every day."
-];
 
 let typedInstance = null;
 
@@ -273,12 +228,11 @@ onMounted(() => window.addEventListener('keydown', closeOverlaysOnEsc));
 onUnmounted(() => window.removeEventListener('keydown', closeOverlaysOnEsc));
 
 const isDarkMode = ref(false);
-const darkModeIconClass = ref('fas fa-moon');
+const darkModeIconClass = computed(() => isDarkMode.value ? 'fas fa-sun' : 'fas fa-moon');
 
 const applyDarkMode = (enabled) => {
   isDarkMode.value = enabled;
   document.documentElement.classList.toggle('dark-mode', enabled);
-  darkModeIconClass.value = enabled ? 'fas fa-sun' : 'fas fa-moon';
 };
 
 const toggleDarkMode = () => {
