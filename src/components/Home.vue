@@ -138,6 +138,14 @@ const descriptionElement = ref(null);
 let typedInstance = null;
 
 const initializeTyped = () => {
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReducedMotion) {
+    if (descriptionElement.value) {
+      descriptionElement.value.textContent = predefinedDescriptions[0] ?? '';
+    }
+    return;
+  }
+
   typedInstance = new Typed(descriptionElement.value, {
     strings: predefinedDescriptions,
     typeSpeed: 120,

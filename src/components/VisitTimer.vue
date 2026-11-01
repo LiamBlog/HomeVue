@@ -7,6 +7,8 @@
       :initial="{ opacity: 0, y: 50, x: '-50%', scale: 0.5 }"
       :enter="{ opacity: 1, y: 0, x: '-50%', scale: 1, transition: { duration: 300 } }"
       :aria-expanded="showCalendar"
+      aria-haspopup="dialog"
+      aria-controls="calendar-popup"
       aria-label="查看当前日期和停留时间"
       @mouseenter="handleMouseEnter"
       @mouseleave="handleMouseLeave"
@@ -41,8 +43,11 @@
 
     <Transition name="calendar">
       <div
-        v-if="showCalendar" 
+        v-if="showCalendar"
+        id="calendar-popup"
         class="calendar-popup"
+        role="dialog"
+        aria-label="当前日期与时间"
         @mouseleave="handleMouseLeave"
       >
         <div class="calendar-header">
@@ -72,13 +77,16 @@ import { ref, onMounted, onUnmounted, computed } from 'vue';
 const useTimeManager = () => {
   const startTime = ref(Date.now());
   const currentTime = ref(Date.now());
+  let timer = null;
 
   onMounted(() => {
-    const timer = setInterval(() => {
+    timer = setInterval(() => {
       currentTime.value = Date.now();
     }, 1000);
-    
-    onUnmounted(() => clearInterval(timer));
+  });
+
+  onUnmounted(() => {
+    if (timer) clearInterval(timer);
   });
 
   // 计算属性
@@ -126,6 +134,16 @@ const toggleCalendar = () => {
   isCalendarPinned.value = !isCalendarPinned.value;
   showCalendar.value = true;
 };
+
+const closeCalendarOnEsc = (event) => {
+  if (event.key === 'Escape' && showCalendar.value) {
+    isCalendarPinned.value = false;
+    showCalendar.value = false;
+  }
+};
+
+onMounted(() => window.addEventListener('keydown', closeCalendarOnEsc));
+onUnmounted(() => window.removeEventListener('keydown', closeCalendarOnEsc));
 </script>
 
 <style scoped lang="less">

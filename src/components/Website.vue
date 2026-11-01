@@ -51,11 +51,14 @@ const swiperContainer = ref(null);
 let swiperInstance = null;
 
 onMounted(() => {
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   swiperInstance = new Swiper(swiperContainer.value.querySelector('.swiper-container'), {
     slidesPerView: 1,
     spaceBetween: 20,
+    speed: prefersReducedMotion ? 0 : 300,
     pagination: { el: swiperContainer.value.querySelector('.swiper-pagination'), clickable: true },
-    mousewheel: { releaseOnEdges: true },
+    mousewheel: prefersReducedMotion ? false : { releaseOnEdges: true },
+    allowTouchMove: !prefersReducedMotion,
   });
 });
 
