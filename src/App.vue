@@ -152,7 +152,7 @@ footer a {
 
 footer a:hover {
   text-decoration: underline;
-  color: var(--link-hover-color, #42b983);
+  color: var(--hover-link-color);
 }
 
 .footer-item {
@@ -164,7 +164,7 @@ footer a:hover {
 }
 
 .footer-separator {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--border-color);
   margin: 0 4px;
 }
 
