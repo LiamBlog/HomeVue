@@ -15,6 +15,8 @@
           <img
             :src="profileImage"
             alt=""
+            width="150"
+            height="150"
             referrerpolicy="no-referrer"
           >
         </button>
@@ -262,7 +264,7 @@ onUnmounted(() => {
       width: 2em;
       height: 2em;
       border-radius: 20px;
-      border: 3px solid #eee;
+      border: 3px solid var(--background-color);
       bottom: 5px;
       right: 15px;
       display: flex;
