@@ -117,12 +117,14 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted, onUnmounted, nextTick } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import contacts from '../config/links.json';
 import predefinedDescriptions from '../config/descriptions.json';
 import Website from './Website.vue';
 import AboutPage from './AboutPage.vue';
 import VisitTimer from './VisitTimer.vue';
+import { useTheme } from '../composables/useTheme';
+import { useDialogFocus } from '../composables/useDialogFocus';
 import Typed from 'typed.js';
 
 const showQR = ref(false);
@@ -130,10 +132,11 @@ const showAbout = ref(false);
 const qrCodeSrc = ref('');
 const aboutDialog = ref(null);
 const qrDialog = ref(null);
-const lastFocusedElement = ref(null);
 const profileImage = ref(import.meta.env.VITE_APP_PROFILE_IMAGE_URL || 'https://img.mlhh.cn/file/BQACAgUAAyEGAATjI15nAAOcaoRuEOpKqct2Sp9frfKwN2DNYJwAAjEnAAI0MShUaSGxP90aDTI9BA.jpg');
 const userName = ref(import.meta.env.VITE_APP_USER_NAME || '十安');
 const descriptionElement = ref(null);
+
+const { isDarkMode, darkModeIconClass, initializeTheme, toggleDarkMode } = useTheme();
 
 let typedInstance = null;
 
@@ -156,27 +159,16 @@ const initializeTyped = () => {
   });
 };
 
-onMounted(() => {
-  initializeTyped();
-});
+function closeActiveOverlay() {
+  showAbout.value = false;
+  showQR.value = false;
+  restoreFocus();
+}
 
-onUnmounted(() => {
-  typedInstance?.destroy();
-});
-
-const focusDialog = async (dialogRef) => {
-  await nextTick();
-  dialogRef.value?.focus();
-};
-
-const rememberFocus = () => {
-  lastFocusedElement.value = document.activeElement;
-};
-
-const restoreFocus = () => {
-  lastFocusedElement.value?.focus?.();
-  lastFocusedElement.value = null;
-};
+const { rememberFocus, restoreFocus, focusDialog } = useDialogFocus(
+  () => aboutDialog.value || qrDialog.value,
+  closeActiveOverlay,
+);
 
 const toggleQRCode = (qrCode) => {
   if (!qrCode) return;
@@ -206,63 +198,13 @@ const closeAbout = () => {
   restoreFocus();
 };
 
-const closeOverlaysOnEsc = (event) => {
-  const dialog = aboutDialog.value || qrDialog.value;
-  if (!dialog) return;
-
-  if (event.key === 'Escape') {
-    showAbout.value = false;
-    showQR.value = false;
-    restoreFocus();
-    return;
-  }
-
-  if (event.key !== 'Tab') return;
-  const focusable = [...dialog.querySelectorAll('button, a, [tabindex]:not([tabindex="-1"])')];
-  if (!focusable.length) return;
-
-  const first = focusable[0];
-  const last = focusable[focusable.length - 1];
-  if (event.shiftKey && document.activeElement === first) {
-    event.preventDefault();
-    last.focus();
-  } else if (!event.shiftKey && document.activeElement === last) {
-    event.preventDefault();
-    first.focus();
-  }
-};
-
-onMounted(() => window.addEventListener('keydown', closeOverlaysOnEsc));
-onUnmounted(() => window.removeEventListener('keydown', closeOverlaysOnEsc));
-
-const isDarkMode = ref(false);
-const darkModeIconClass = computed(() => isDarkMode.value ? 'fas fa-sun' : 'fas fa-moon');
-
-const applyDarkMode = (enabled) => {
-  isDarkMode.value = enabled;
-  document.documentElement.classList.toggle('dark-mode', enabled);
-};
-
-const toggleDarkMode = () => {
-  const enabled = !isDarkMode.value;
-  applyDarkMode(enabled);
-  try {
-    localStorage.setItem('darkMode', String(enabled));
-  } catch {
-    // Theme remains active for this session when storage is unavailable.
-  }
-};
-
 onMounted(() => {
-  let savedDarkMode = null;
-  try {
-    savedDarkMode = localStorage.getItem('darkMode');
-  } catch {
-    // Use the system preference when storage is unavailable.
-  }
+  initializeTyped();
+  initializeTheme();
+});
 
-  const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  applyDarkMode(savedDarkMode === null ? prefersDarkMode : savedDarkMode === 'true');
+onUnmounted(() => {
+  typedInstance?.destroy();
 });
 </script>
 
