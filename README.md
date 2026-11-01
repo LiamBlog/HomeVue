@@ -14,6 +14,18 @@
 - 修改网站列表 **`src/config/site.json`** 文件中的内容值即可
 - 修改主页打字机展示文案 **`src/config/descriptions.json`** 文件中的字符串数组即可
 
+### 环境变量
+
+复制 `.env.example` 为 `.env` 后按需填写，全部为可选项：
+
+| 变量 | 说明 |
+|------|------|
+| `VITE_APP_USER_NAME` | 主页显示的名称 |
+| `VITE_APP_PROFILE_IMAGE_URL` | 头像图片地址 |
+| `VITE_APP_ICP_NUMBER` | 页脚备案号 |
+| `VITE_APP_UMAMI_SRC` | Umami 统计脚本地址，留空则不加载 |
+| `VITE_APP_UMAMI_WEBSITE_ID` | Umami 站点 ID，留空则不加载 |
+
 ### 部署
 
 * **安装** [node.js](https://nodejs.org/zh-cn/) **环境**

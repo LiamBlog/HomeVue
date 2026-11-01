@@ -11,6 +11,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^7.3.1",
     "@vueuse/motion": "^2.2.5",
     "less": "^4.2.0",
     "typed.js": "^2.1.0",
