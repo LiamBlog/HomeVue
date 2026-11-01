@@ -12,6 +12,7 @@
 
 - 修改联系方式 **`src/config/links.json`** 文件中的内容值即可
 - 修改网站列表 **`src/config/site.json`** 文件中的内容值即可
+- 修改主页打字机展示文案 **`src/config/descriptions.json`** 文件中的字符串数组即可
 
 ### 部署
 
@@ -29,10 +30,23 @@ npm install
 npm run dev
 # 构建
 npm run build
+# 本地预览构建产物
+npm run preview
 ```
 > 构建完成后，静态资源会在 **`dist` 目录** 中生成，可将 **`dist` 文件夹下的文件**上传至服务器，也可使用 `Vercel` 等托管平台一键导入并自动部署
 
-### Vercle部署
+### 开发与质量检查
+
+项目已接入 ESLint 与 Vitest，提交前可运行以下命令：
+
+```bash
+# 代码风格检查
+npm run lint
+# 运行组件单元测试
+npm run test
+```
+
+### Vercel部署
 
 >点击后自动部署并创建仓库
 
