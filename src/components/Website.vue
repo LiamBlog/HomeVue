@@ -1,70 +1,28 @@
 <template>
-  <div
-    ref="swiperContainer"
-    class="container"
-  >
-    <div class="swiper-container">
-      <div class="swiper-wrapper">
-        <div
-          v-for="(siteChunk, index) in chunkedSites"
-          :key="siteChunk[0]?.url || index"
-          class="swiper-slide"
-        >
-          <div class="site-grid">
-            <a
-              v-for="site in siteChunk"
-              :key="site.url"
-              class="site-box"
-              :href="site.url"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <span class="site-content">
-                <i
-                  :class="site.icon"
-                  aria-hidden="true"
-                />
-                <span class="site-name">{{ site.name }}</span>
-              </span>
-            </a>
-          </div>
-        </div>
-      </div>
-      <div class="swiper-pagination" />
+  <div class="container">
+    <div class="site-grid">
+      <a
+        v-for="site in siteData"
+        :key="site.url"
+        class="site-box"
+        :href="site.url"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span class="site-content">
+          <i
+            :class="site.icon"
+            aria-hidden="true"
+          />
+          <span class="site-name">{{ site.name }}</span>
+        </span>
+      </a>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
-import Swiper from 'swiper/bundle';
-import 'swiper/swiper-bundle.css';
 import siteData from '../config/site.json';
-
-const chunkedSites = ref(siteData.reduce((acc, site, index) => {
-  const chunkIndex = Math.floor(index / 6);
-  if (!acc[chunkIndex]) acc[chunkIndex] = [];
-  acc[chunkIndex].push(site);
-  return acc;
-}, []));
-const swiperContainer = ref(null);
-let swiperInstance = null;
-
-onMounted(() => {
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  swiperInstance = new Swiper(swiperContainer.value.querySelector('.swiper-container'), {
-    slidesPerView: 1,
-    spaceBetween: 20,
-    speed: prefersReducedMotion ? 0 : 300,
-    pagination: { el: swiperContainer.value.querySelector('.swiper-pagination'), clickable: true },
-    mousewheel: prefersReducedMotion ? false : { releaseOnEdges: true },
-    allowTouchMove: !prefersReducedMotion,
-  });
-});
-
-onUnmounted(() => {
-  swiperInstance?.destroy(true, true);
-});
 </script>
 
 
@@ -73,15 +31,6 @@ onUnmounted(() => {
   max-width: 700px;
   width: 100%;
   margin: 30px 0 20px;
-}
-
-.swiper-container {
-  overflow: hidden;
-  padding: 10px;
-}
-
-.swiper-pagination {
-  bottom: inherit;
 }
 
 .site-grid {
@@ -204,11 +153,5 @@ onUnmounted(() => {
   .site-box {
     transition: none;
   }
-}
-
-:deep(.swiper-pagination-bullet-active) {
-  background: #8c8c8c94;
-  width: 20px;
-  border-radius: 5px;
 }
 </style>
