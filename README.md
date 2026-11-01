@@ -58,6 +58,21 @@ npm run lint
 npm run test
 ```
 
+### 字体子集
+
+`public/fonts/YSHST.woff2` 是按源码用字裁剪后的子集（约 148 KB，完整字体约 1.2 MB，保存在 `scripts/fonts/YSHST.source.woff2`）。
+
+修改界面文案后如需重建字体子集：
+
+```bash
+# 首次使用需安装依赖
+pip install fonttools brotli
+# 扫描 src、index.html、README.md 中的字符并重新生成子集
+npm run font:subset
+```
+
+脚本会自动加入日期、星期、中文数字等运行时才渲染的字符；`AboutPage` 中动态获取的 GitHub 提交信息若含生僻字，会回退到系统字体。
+
 ### Vercel部署
 
 >点击后自动部署并创建仓库
