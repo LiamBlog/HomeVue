@@ -41,6 +41,7 @@ import siteData from '../config/site.json';
 }
 
 .site-box {
+  position: relative;
   flex: 0 1 calc((100% - 30px) / 3);
   min-width: 0;
   padding: 30px;
@@ -50,9 +51,19 @@ import siteData from '../config/site.json';
   border-radius: 16px;
   border: 1px solid var(--border-color);
   background-color: var(--surface-color);
-  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  box-shadow: var(--glass-edges);
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: var(--glass-sheen);
+    pointer-events: none;
+  }
 
   &:active {
     transform: translateY(-1px) scale(0.99);
@@ -66,7 +77,7 @@ import siteData from '../config/site.json';
   @media (hover: hover) {
     &:hover {
       transform: translateY(-4px);
-      box-shadow: inset 0 1px 0 var(--glass-highlight), 0 12px 28px var(--shadow-color);
+      box-shadow: var(--glass-edges), 0 12px 32px var(--shadow-color);
       border-color: var(--hover-link-color);
       background-color: var(--surface-color-hover);
 

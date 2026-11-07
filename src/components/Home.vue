@@ -223,7 +223,7 @@ onUnmounted(() => {
   .user-profile-image {
     display: flex;
     border-radius: 50%;
-    box-shadow: 0 2px 8px var(--shadow-color);
+    box-shadow: var(--glass-edges), 0 2px 8px var(--shadow-color);
     padding: 5px;
     border: 3px solid var(--border-color);
     position: relative;
@@ -382,7 +382,7 @@ onUnmounted(() => {
     border-radius: 999px;
     background-color: var(--surface-color);
     backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
-    box-shadow: inset 0 1px 0 var(--glass-highlight);
+    box-shadow: var(--glass-edges);
     transition: all 0.3s ease-in-out;
 
     .contact-item {
@@ -463,7 +463,7 @@ onUnmounted(() => {
     @media (hover: hover) {
       &:hover {
         background-color: var(--surface-color-hover);
-        box-shadow: inset 0 1px 0 var(--glass-highlight), 0 8px 24px var(--shadow-color);
+        box-shadow: var(--glass-edges), 0 8px 24px var(--shadow-color);
       }
     }
   }

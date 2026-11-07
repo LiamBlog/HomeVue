@@ -72,8 +72,8 @@ const closeModal = () => emit('close');
   overflow-y: auto;
   overscroll-behavior: contain;
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
-  background-color: rgba(var(--background-color-rgb), 0.78);
-  box-shadow: inset 0 1px 0 var(--glass-highlight), 0 24px 64px rgba(0, 0, 0, 0.25);
+  background-color: rgba(var(--background-color-rgb), 0.66);
+  box-shadow: var(--glass-edges), 0 24px 64px rgba(0, 0, 0, 0.25);
   padding: 40px;
   border-radius: 20px;
   border: 1px solid var(--border-color);
@@ -82,6 +82,16 @@ const closeModal = () => emit('close');
   box-sizing: border-box;
   scrollbar-gutter: stable;
   animation: aboutIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: var(--glass-sheen);
+    pointer-events: none;
+  }
 
   @media (max-width: 600px) {
     max-height: calc(100dvh - 24px);

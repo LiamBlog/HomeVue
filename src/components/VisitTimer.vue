@@ -199,7 +199,7 @@ onUnmounted(() => window.removeEventListener('keydown', closeCalendarOnEsc));
   transform: translateX(-50%);
   border: 1px solid var(--border-color);
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
-  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  box-shadow: var(--glass-edges);
   font-weight: bold;
 }
 
@@ -219,13 +219,13 @@ onUnmounted(() => window.removeEventListener('keydown', closeCalendarOnEsc));
     outline: 2px solid var(--hover-link-color);
     outline-offset: 2px;
     transform: translateX(-50%) translateY(-5px);
-    box-shadow: inset 0 1px 0 var(--glass-highlight), 0 8px 24px var(--shadow-color);
+    box-shadow: var(--glass-edges), 0 8px 24px var(--shadow-color);
   }
 
   @media (hover: hover) {
     &:hover {
       transform: translateX(-50%) translateY(-5px);
-      box-shadow: inset 0 1px 0 var(--glass-highlight), 0 8px 24px var(--shadow-color);
+      box-shadow: var(--glass-edges), 0 8px 24px var(--shadow-color);
       background-color: var(--surface-color-hover);
     }
   }
@@ -268,7 +268,7 @@ onUnmounted(() => window.removeEventListener('keydown', closeCalendarOnEsc));
   max-width: calc(100vw - 32px);
   padding: 12px;
   border-radius: 14px;
-  box-shadow: inset 0 1px 0 var(--glass-highlight), 0 2px 12px var(--shadow-color);
+  box-shadow: var(--glass-edges), 0 2px 12px var(--shadow-color);
   background-color: var(--popover-background);
   min-width: min(188px, calc(100vw - 32px));
 

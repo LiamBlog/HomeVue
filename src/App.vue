@@ -115,7 +115,7 @@ footer {
   box-sizing: border-box;
   background: var(--footer-background);
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
-  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  box-shadow: var(--glass-edges);
   border-top: 1px solid var(--border-color);
   /* 确保footer不会阻止内容滚动 */
   position: relative;
