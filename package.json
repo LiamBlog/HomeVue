@@ -9,16 +9,17 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "test": "vitest run",
-    "font:subset": "python3 scripts/subset-font.py"
+    "font:subset": "python3 scripts/subset-font.py",
+    "icons:build": "node scripts/build-icons.mjs"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^7.3.1",
     "@vueuse/motion": "^2.2.5",
     "less": "^4.2.0",
     "typed.js": "^2.1.0",
     "vue": "^3.4.37"
   },
   "devDependencies": {
+    "@fortawesome/fontawesome-free": "^7.3.1",
     "@vitejs/plugin-vue": "^6.0.10",
     "@vue/test-utils": "^2.4.11",
     "eslint": "^9.39.5",

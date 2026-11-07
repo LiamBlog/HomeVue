@@ -17,7 +17,10 @@
       @click="toggleCalendar"
     >
       <div class="timer-content">
-        <i class="fas fa-clock" />
+        <i
+          class="fas fa-clock"
+          aria-hidden="true"
+        />
         <span>停留时间 : </span>
         <div class="time">
           <template
@@ -51,18 +54,27 @@
         @mouseleave="handleMouseLeave"
       >
         <div class="calendar-header">
-          <i class="fas fa-calendar-alt" />
+          <i
+            class="fas fa-calendar-alt"
+            aria-hidden="true"
+          />
           {{ dateTime.dateOnly }}
         </div>
         <div class="calendar-time">
-          <i class="fas fa-clock" />
+          <i
+            class="fas fa-clock"
+            aria-hidden="true"
+          />
           <span>{{ dateTime.weekday }}</span>
           <span>{{ dateTime.timeWithoutSeconds }}</span>
           <span
             v-if="isCalendarPinned"
             class="pin-indicator"
           >
-            <i class="fas fa-thumbtack" />
+            <i
+              class="fas fa-thumbtack"
+              aria-hidden="true"
+            />
           </span>
         </div>
       </div>

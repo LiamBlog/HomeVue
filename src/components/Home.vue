@@ -49,7 +49,10 @@
           class="contact-item"
           :style="{ '--hover-color': contact.hoverColor }"
         >
-          <i :class="contact.icon" />
+          <i
+            :class="contact.icon"
+            aria-hidden="true"
+          />
           <span class="tooltip">{{ contact.type }}</span>
         </a>
         <button
@@ -60,7 +63,10 @@
           :aria-label="contact.type"
           @click="toggleQRCode(contact.qrCode)"
         >
-          <i :class="contact.icon" />
+          <i
+            :class="contact.icon"
+            aria-hidden="true"
+          />
           <span class="tooltip">{{ contact.type }}</span>
         </button>
       </template>
@@ -71,7 +77,10 @@
         :aria-label="isDarkMode ? '切换到浅色模式' : '切换到深色模式'"
         @click="toggleDarkMode"
       >
-        <i :class="darkModeIconClass" />
+        <i
+          :class="darkModeIconClass"
+          aria-hidden="true"
+        />
         <span class="tooltip">{{ isDarkMode ? '浅色' : '深色' }}</span>
       </button>
     </div>

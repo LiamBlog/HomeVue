@@ -8,11 +8,13 @@
 
 ### 修改
 
-图标默认采用Font Awesome，如需修改图标，请前往 [Font Awesome](https://fa6.dashgame.com/) 复制图标
+图标使用 Font Awesome 的类名（如 `fas fa-envelope`），但页面不再加载图标字体：实际用到的图标由脚本从 Font Awesome 的 SVG 源生成内联样式。
 
 - 修改联系方式 **`src/config/links.json`** 文件中的内容值即可
 - 修改网站列表 **`src/config/site.json`** 文件中的内容值即可
 - 修改主页打字机展示文案 **`src/config/descriptions.json`** 文件中的字符串数组即可
+
+> **修改或新增图标后必须执行 `npm run icons:build`**，否则新图标不会渲染。图标名可在 [Font Awesome](https://fa6.dashgame.com/) 查询。
 
 ### 环境变量
 
@@ -87,6 +89,22 @@ npm run font:subset
 - 输出字符数与前后体积对比，例如：`字符数：991`、`字体体积：1226.5 KB -> 147.6 KB（88% 缩减）`
 
 > 说明：`AboutPage` 会动态展示 GitHub 提交信息，若其中包含子集之外的生僻字，将通过 `font-display: swap` 回退到系统 `sans-serif`，不影响可读性。
+
+### 图标
+
+页面保留 Font Awesome 的类名写法（`fas fa-envelope`、`fab fa-github` 等），但**不再加载图标字体**。`scripts/build-icons.mjs` 会扫描源码中实际使用的图标，从 Font Awesome 的 SVG 源生成 `src/styles/icons.less`，以 CSS `mask-image` + 内联 SVG 绘制，颜色自动跟随 `currentColor`。
+
+| 项目 | 改造前 | 改造后 |
+|------|--------|--------|
+| 图标相关资源 | CSS 114.6 KB + 字体 234.9 KB | 内联样式 12.3 KB，无字体文件 |
+
+新增或更换图标后需重新生成：
+
+```bash
+npm run icons:build
+```
+
+`@fortawesome/fontawesome-free` 仅为开发依赖，用于提供 SVG 源文件，不参与生产打包。
 
 ### Vercel部署
 

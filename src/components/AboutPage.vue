@@ -13,7 +13,10 @@
               :key="tech.name"
               :class="['tech-item', tech.name.toLowerCase()]"
             >
-              <i :class="tech.icon" />
+              <i
+                :class="tech.icon"
+                aria-hidden="true"
+              />
               {{ tech.name }}
             </li>
           </ul>
@@ -26,7 +29,10 @@
             rel="noopener noreferrer"
             class="github-link"
           >
-            <i class="fab fa-github" /> Github
+            <i
+              class="fab fa-github"
+              aria-hidden="true"
+            /> Github
           </a>
         </div>
         <div class="update-info">
@@ -54,7 +60,10 @@
         aria-label="关闭关于窗口"
         @click="closeModal"
       >
-        <i class="fas fa-times" />
+        <i
+          class="fas fa-times"
+          aria-hidden="true"
+        />
       </button>
     </div>
   </div>

@@ -1,9 +1,7 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 import './style.less';
-import '@fortawesome/fontawesome-free/css/fontawesome.min.css';
-import '@fortawesome/fontawesome-free/css/solid.min.css';
-import '@fortawesome/fontawesome-free/css/brands.min.css';
+import './styles/icons.less';
 import { MotionPlugin } from '@vueuse/motion';
 
 const app = createApp(App);
