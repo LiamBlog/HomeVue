@@ -63,8 +63,7 @@
       </template>
       <button
         type="button"
-        class="contact-item"
-        :style="{ '--hover-color': isDarkMode ? '#ffcc00' : '#666' }"
+        class="contact-item theme-toggle"
         :aria-label="isDarkMode ? '切换到浅色模式' : '切换到深色模式'"
         @click="toggleDarkMode"
       >
@@ -410,7 +409,8 @@ onUnmounted(() => {
     border: 1px solid var(--border-color);
     border-radius: 999px;
     background-color: var(--surface-color);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+    box-shadow: inset 0 1px 0 var(--glass-highlight);
     transition: all 0.3s ease-in-out;
 
     .contact-item {
@@ -435,6 +435,18 @@ onUnmounted(() => {
         display: inline-flex;
         justify-content: center;
         align-items: center;
+      }
+
+      &.theme-toggle {
+        --hover-color: var(--hover-link-color);
+      }
+
+      &.theme-toggle i {
+        transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      &.theme-toggle[aria-label='切换到浅色模式'] i {
+        transform: rotate(180deg);
       }
 
       &:focus-visible {
@@ -479,7 +491,7 @@ onUnmounted(() => {
     @media (hover: hover) {
       &:hover {
         background-color: var(--surface-color-hover);
-        box-shadow: 0 6px 18px var(--shadow-color);
+        box-shadow: inset 0 1px 0 var(--glass-highlight), 0 8px 24px var(--shadow-color);
       }
     }
   }
@@ -491,6 +503,7 @@ onUnmounted(() => {
     height: 100%;
     padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
     background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -543,7 +556,7 @@ onUnmounted(() => {
     object-fit: contain;
     background: white;
     padding: clamp(12px, 4vw, 20px);
-    border-radius: var(--border-radius);
+    border-radius: 16px;
     box-shadow: 0 4px 8px var(--shadow-color);
     transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
 

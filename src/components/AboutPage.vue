@@ -215,10 +215,12 @@ if (cachedCommits) {
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
-  backdrop-filter: blur(5px);
-  background-color: rgba(var(--background-color-rgb), 0.9);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+  background-color: rgba(var(--background-color-rgb), 0.78);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), 0 24px 64px rgba(0, 0, 0, 0.25);
   padding: 40px;
-  border-radius: var(--border-radius);
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
   position: relative;
   text-align: center;
   box-sizing: border-box;

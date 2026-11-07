@@ -198,7 +198,8 @@ onUnmounted(() => window.removeEventListener('keydown', closeCalendarOnEsc));
   left: 50%;
   transform: translateX(-50%);
   border: 1px solid var(--border-color);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
   font-weight: bold;
 }
 
@@ -206,7 +207,7 @@ onUnmounted(() => window.removeEventListener('keydown', closeCalendarOnEsc));
   bottom: calc(50px + env(safe-area-inset-bottom, 0px));
   max-width: calc(100vw - 32px);
   padding: 8px 15px;
-  border-radius: 20px;
+  border-radius: 999px;
   color: var(--text-color);
   background-color: var(--surface-color);
   font: inherit;
@@ -218,13 +219,13 @@ onUnmounted(() => window.removeEventListener('keydown', closeCalendarOnEsc));
     outline: 2px solid var(--hover-link-color);
     outline-offset: 2px;
     transform: translateX(-50%) translateY(-5px);
-    box-shadow: 0 2px 8px var(--shadow-color);
+    box-shadow: inset 0 1px 0 var(--glass-highlight), 0 8px 24px var(--shadow-color);
   }
 
   @media (hover: hover) {
     &:hover {
       transform: translateX(-50%) translateY(-5px);
-      box-shadow: 0 2px 8px var(--shadow-color);
+      box-shadow: inset 0 1px 0 var(--glass-highlight), 0 8px 24px var(--shadow-color);
       background-color: var(--surface-color-hover);
     }
   }
@@ -266,8 +267,8 @@ onUnmounted(() => window.removeEventListener('keydown', closeCalendarOnEsc));
   bottom: calc(100px + env(safe-area-inset-bottom, 0px));
   max-width: calc(100vw - 32px);
   padding: 12px;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px var(--shadow-color);
+  border-radius: 14px;
+  box-shadow: inset 0 1px 0 var(--glass-highlight), 0 2px 12px var(--shadow-color);
   background-color: var(--popover-background);
   min-width: min(188px, calc(100vw - 32px));
 

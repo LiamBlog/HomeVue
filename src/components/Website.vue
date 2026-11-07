@@ -46,10 +46,11 @@ import siteData from '../config/site.json';
   padding: 30px;
   color: var(--text-color);
   text-decoration: none;
-  backdrop-filter: blur(10px);
-  border-radius: var(--border-radius);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+  border-radius: 16px;
   border: 1px solid var(--border-color);
   background-color: var(--surface-color);
+  box-shadow: inset 0 1px 0 var(--glass-highlight);
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
 
@@ -65,7 +66,7 @@ import siteData from '../config/site.json';
   @media (hover: hover) {
     &:hover {
       transform: translateY(-4px);
-      box-shadow: 0 6px 18px var(--shadow-color);
+      box-shadow: inset 0 1px 0 var(--glass-highlight), 0 12px 28px var(--shadow-color);
       border-color: var(--hover-link-color);
       background-color: var(--surface-color-hover);
 
@@ -117,7 +118,7 @@ import siteData from '../config/site.json';
 
   .site-box {
     padding: 15px;
-    border-radius: 8px;
+    border-radius: 12px;
   }
 
   .site-name {
