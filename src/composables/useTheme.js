@@ -2,8 +2,11 @@ import { computed, ref } from 'vue';
 
 const STORAGE_KEY = 'darkMode';
 
+const systemPrefersDark = () => window.matchMedia('(prefers-color-scheme: dark)');
+
 /**
  * 主题管理：首次加载优先使用本地存储，其次跟随系统偏好；切换时持久化。
+ * 未手动设置过主题时，系统切换深浅色会实时跟随。
  */
 export function useTheme() {
   const isDarkMode = ref(false);
@@ -14,16 +17,25 @@ export function useTheme() {
     document.documentElement.classList.toggle('dark-mode', enabled);
   };
 
-  const initializeTheme = () => {
-    let savedDarkMode = null;
+  const readSavedDarkMode = () => {
     try {
-      savedDarkMode = localStorage.getItem(STORAGE_KEY);
+      return localStorage.getItem(STORAGE_KEY);
     } catch {
       // 存储不可用时回退到系统偏好
+      return null;
     }
+  };
 
-    const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    applyDarkMode(savedDarkMode === null ? prefersDarkMode : savedDarkMode === 'true');
+  const initializeTheme = () => {
+    const savedDarkMode = readSavedDarkMode();
+    applyDarkMode(savedDarkMode === null ? systemPrefersDark().matches : savedDarkMode === 'true');
+
+    // 用户未手动设置过主题时，跟随系统深浅色切换
+    if (savedDarkMode === null) {
+      systemPrefersDark().addEventListener('change', (event) => {
+        if (readSavedDarkMode() === null) applyDarkMode(event.matches);
+      });
+    }
   };
 
   const toggleDarkMode = () => {

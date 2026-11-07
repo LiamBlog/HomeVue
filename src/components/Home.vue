@@ -14,6 +14,7 @@
             alt=""
             width="150"
             height="150"
+            fetchpriority="high"
             referrerpolicy="no-referrer"
           >
         </button>

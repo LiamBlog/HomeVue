@@ -16,6 +16,14 @@
 
 > **修改或新增图标后必须执行 `npm run icons:build`**，否则新图标不会渲染。图标名可在 [Font Awesome](https://fa6.dashgame.com/) 查询。
 
+### 界面特性
+
+- **液态玻璃质感**：卡片、联系图标胶囊、停留计时器、页脚与弹窗统一采用 `blur(20px) saturate(180%)` 磨砂 + 斜切光泽 + 顶边高光 / 底边折射的「液态玻璃」样式，深浅色各自适配（令牌见 `src/style.less`）。
+- **打字机文案**：自研 `src/composables/useTypewriter.js` 实现逐字输入 / 停留 / 删除循环，替代第三方依赖；`prefers-reduced-motion` 下直接显示首条文案。
+- **CSS 入场动画**：头像、姓名、联系区入场与计时器浮入均为纯 CSS 关键帧，无 JS 动画库。
+- **可访问性**：弹窗焦点陷阱与 Esc 关闭、tooltip 不重复播报、全局 `prefers-reduced-motion` 降级、键盘焦点环。
+- **关于弹窗**：展示技术栈与开源地址，不再发起任何网络请求。
+
 ### 环境变量
 
 复制 `.env.example` 为 `.env` 后按需填写，全部为可选项：
@@ -58,6 +66,8 @@ npm run preview
 npm run lint
 # 运行组件单元测试
 npm run test
+# 依赖安全审计
+npm audit --audit-level=high
 ```
 
 ### 字体子集
@@ -88,7 +98,7 @@ npm run font:subset
 - 始终加入 ASCII 基础字符、常用中英文标点，以及年月日、星期、中文数字、时分秒等运行时才渲染的用字
 - 输出字符数与前后体积对比，例如：`字符数：991`、`字体体积：1226.5 KB -> 147.6 KB（88% 缩减）`
 
-> 说明：`AboutPage` 会动态展示 GitHub 提交信息，若其中包含子集之外的生僻字，将通过 `font-display: swap` 回退到系统 `sans-serif`，不影响可读性。
+> 说明：子集仅覆盖界面静态文案，运行时动态内容（如时间显示）所需的用字已在脚本内置；子集之外的生僻字将通过 `font-display: swap` 回退到系统 `sans-serif`，不影响可读性。
 
 ### 图标
 

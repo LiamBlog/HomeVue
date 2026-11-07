@@ -80,79 +80,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
+import { useTimeManager } from '../composables/useTimeManager';
 
-// === 合并计时和日期时间逻辑 ===
-const useTimeManager = () => {
-  const startTime = ref(Date.now());
-  const currentTime = ref(Date.now());
-  let timer = null;
-
-  const startTimer = () => {
-    if (timer) return;
-    timer = window.setInterval(() => {
-      currentTime.value = Date.now();
-    }, 1000);
-  };
-
-  const stopTimer = () => {
-    if (!timer) return;
-    window.clearInterval(timer);
-    timer = null;
-  };
-
-  const handleVisibilityChange = () => {
-    if (document.hidden) {
-      stopTimer();
-      return;
-    }
-    currentTime.value = Date.now();
-    startTimer();
-  };
-
-  onMounted(() => {
-    startTimer();
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-  });
-
-  onUnmounted(() => {
-    stopTimer();
-    document.removeEventListener('visibilitychange', handleVisibilityChange);
-  });
-
-  // 计算属性
-  const timeUnits = computed(() => {
-    const totalSeconds = Math.floor((currentTime.value - startTime.value) / 1000);
-    return {
-      hours: Math.floor(totalSeconds / 3600).toString().padStart(2, '0'),
-      minutes: Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0'),
-      seconds: (totalSeconds % 60).toString().padStart(2, '0')
-    };
-  });
-
-  const dateTime = computed(() => {
-    const now = new Date(currentTime.value);
-    return {
-      dateOnly: now.toLocaleDateString('zh-CN', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      }),
-      weekday: now.toLocaleDateString('zh-CN', { weekday: 'long' }),
-      timeWithoutSeconds: now.toLocaleTimeString('zh-CN', {
-        hour: '2-digit',
-        minute: '2-digit'
-      })
-    };
-  });
-
-  return {
-    timeUnits,
-    dateTime
-  };
-};
-
-// === 简化组件状态管理 ===
 const showCalendar = ref(false);
 const isCalendarPinned = ref(false);
 

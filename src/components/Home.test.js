@@ -28,11 +28,14 @@ describe('Home interactions', () => {
   beforeEach(() => {
     localStorage.clear();
     document.documentElement.classList.remove('dark-mode');
-    window.matchMedia = vi.fn().mockReturnValue({ matches: false });
+    window.matchMedia = vi.fn().mockReturnValue({
+      matches: false,
+      addEventListener: vi.fn(),
+    });
   });
 
   it('initializes theme from system preference and persists toggles', async () => {
-    window.matchMedia.mockReturnValue({ matches: true });
+    window.matchMedia.mockReturnValue({ matches: true, addEventListener: vi.fn() });
     const wrapper = mountHome();
     await flushPromises();
 
@@ -44,11 +47,30 @@ describe('Home interactions', () => {
 
   it('prefers the saved theme over the system preference', async () => {
     localStorage.setItem('darkMode', 'false');
-    window.matchMedia.mockReturnValue({ matches: true });
+    window.matchMedia.mockReturnValue({ matches: true, addEventListener: vi.fn() });
     mountHome();
     await flushPromises();
 
     expect(document.documentElement.classList.contains('dark-mode')).toBe(false);
+    expect(window.matchMedia().addEventListener).not.toHaveBeenCalled();
+  });
+
+  it('follows system theme changes when no preference was saved', async () => {
+    const listeners = [];
+    window.matchMedia.mockReturnValue({
+      matches: false,
+      addEventListener: vi.fn((_, listener) => listeners.push(listener)),
+    });
+    mountHome();
+    await flushPromises();
+
+    expect(window.matchMedia().addEventListener).toHaveBeenCalledOnce();
+    listeners.forEach((listener) => listener({ matches: true }));
+    expect(document.documentElement.classList.contains('dark-mode')).toBe(true);
+
+    localStorage.setItem('darkMode', 'false');
+    listeners.forEach((listener) => listener({ matches: false }));
+    expect(document.documentElement.classList.contains('dark-mode')).toBe(true);
   });
 
   it('closes the about dialog on Escape and restores focus', async () => {
@@ -78,7 +100,7 @@ describe('Home interactions', () => {
   });
 
   it('shows the first description without typing when reduced motion is preferred', () => {
-    window.matchMedia.mockReturnValue({ matches: true });
+    window.matchMedia.mockReturnValue({ matches: true, addEventListener: vi.fn() });
     const wrapper = mountHome();
 
     expect(wrapper.get('.description p').text()).toBe('你好鸭，欢迎来到我的主页！！');
