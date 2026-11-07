@@ -18,3 +18,8 @@ if (umamiSrc && umamiWebsiteId) {
   script.dataset.websiteId = umamiWebsiteId;
   document.head.appendChild(script);
 }
+
+// PWA：仅生产环境注册 Service Worker，支持离线访问
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
+}

@@ -116,6 +116,12 @@ npm run icons:build
 
 `@fortawesome/fontawesome-free` 仅为开发依赖，用于提供 SVG 源文件，不参与生产打包。
 
+### PWA 与图标
+
+- **图标本地化**：`favicon` 与 PWA 图标均已本地化到 `public/`（由头像生成，256 色量化压缩），不再依赖远程图片；`index.html` 同时声明 `apple-touch-icon`。
+- **Web App Manifest**：`public/manifest.webmanifest` 声明应用名称、主题色与 192/512/maskable 图标，支持安装到桌面或主屏幕。
+- **Service Worker**：`public/sw.js` 仅缓存同源静态资源——页面导航网络优先、静态资源缓存优先并在后台更新，离线时可访问最近页面；仅生产环境注册（`src/main.js`），更新版本时旧缓存自动清理（`home-vue-v1` 缓存名）。
+
 ### Vercel部署
 
 >点击后自动部署并创建仓库
