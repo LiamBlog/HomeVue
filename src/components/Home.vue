@@ -44,7 +44,10 @@
             :class="contact.icon"
             aria-hidden="true"
           />
-          <span class="tooltip">{{ contact.type }}</span>
+          <span
+            class="tooltip"
+            aria-hidden="true"
+          >{{ contact.type }}</span>
         </a>
         <button
           v-else
@@ -58,7 +61,10 @@
             :class="contact.icon"
             aria-hidden="true"
           />
-          <span class="tooltip">{{ contact.type }}</span>
+          <span
+            class="tooltip"
+            aria-hidden="true"
+          >{{ contact.type }}</span>
         </button>
       </template>
       <button
@@ -71,7 +77,10 @@
           :class="darkModeIconClass"
           aria-hidden="true"
         />
-        <span class="tooltip">{{ isDarkMode ? '浅色' : '深色' }}</span>
+        <span
+          class="tooltip"
+          aria-hidden="true"
+        >{{ isDarkMode ? '浅色' : '深色' }}</span>
       </button>
     </div>
     <Website /> 
@@ -323,7 +332,7 @@ onUnmounted(() => {
       transform: translate(-50%);
       z-index: -1;
       content: "";
-      background: #ffcc00ad;
+      background: var(--name-highlight-background);
       height: 30%;
       width: 110%;
       transition: height 0.3s ease-in-out;
@@ -354,7 +363,7 @@ onUnmounted(() => {
     &::after {
       content: '"';
       font-size: 1.5em;
-      color: #999;
+      color: var(--muted-color);
       margin: 0 10px;
     }
 
@@ -450,10 +459,16 @@ onUnmounted(() => {
 
       .tooltip {
         position: absolute;
-        bottom: 100%;
+        bottom: calc(100% + 6px);
         left: 50%;
         transform: translate(-50%, 10px);
         opacity: 0;
+        padding: 2px 10px;
+        border-radius: 999px;
+        color: var(--text-color);
+        background-color: var(--popover-background);
+        backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+        box-shadow: var(--glass-edges), 0 4px 12px var(--shadow-color);
         transition: opacity 0.3s ease, transform 0.3s ease;
         white-space: nowrap;
         pointer-events: none;

@@ -172,18 +172,18 @@ h3 {
   border-radius: 50%;
   font-size: 1.5em;
   cursor: pointer;
-  color: #7f8c8d;
+  color: var(--muted-color);
   transition: color 0.3s ease, background-color 0.3s ease;
 
   &:focus-visible {
     outline: none;
-    color: #c61b09;
+    color: var(--danger-color);
     background-color: rgba(var(--background-color-rgb), 0.5);
   }
 
   @media (hover: hover) {
     &:hover {
-      color: #c61b09;
+      color: var(--danger-color);
       background-color: rgba(var(--background-color-rgb), 0.5);
     }
   }
