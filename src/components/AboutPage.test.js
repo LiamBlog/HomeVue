@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { flushPromises, mount } from '@vue/test-utils';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import AboutPage from './AboutPage.vue';
 
 const okResponse = (commits) => ({
@@ -9,7 +9,15 @@ const okResponse = (commits) => ({
   json: async () => commits,
 });
 
-const errorResponse = (status) => ({ ok: false, status });
+const errorResponse = (status, headers = {}) => ({
+  ok: false,
+  status,
+  headers: { get: (name) => headers[name.toLowerCase()] ?? null },
+});
+
+beforeEach(() => {
+  localStorage.clear();
+});
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -28,6 +36,9 @@ describe('AboutPage commit loading', () => {
     expect(wrapper.text()).toContain('Add feature');
     expect(wrapper.text()).not.toContain('Details');
     expect(wrapper.find('.loading-item').exists()).toBe(false);
+
+    const cached = JSON.parse(localStorage.getItem('home-vue:commits'));
+    expect(cached.commits[0].message).toBe('Add feature');
   });
 
   it('reports server errors separately and offers retry', async () => {
@@ -49,6 +60,35 @@ describe('AboutPage commit loading', () => {
     await flushPromises();
 
     expect(wrapper.text()).toContain('访问次数受限');
+  });
+
+  it('shows when the rate limit resets', async () => {
+    const resetAt = Math.floor(Date.now() / 1000) + 600;
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(errorResponse(403, {
+      'x-ratelimit-reset': String(resetAt),
+    })));
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    const wrapper = mount(AboutPage);
+    await flushPromises();
+
+    expect(wrapper.text()).toContain('预计');
+    expect(wrapper.text()).toMatch(/\d{2}:\d{2} 后可重试/);
+  });
+
+  it('reuses a fresh cache without requesting GitHub', async () => {
+    localStorage.setItem('home-vue:commits', JSON.stringify({
+      savedAt: Date.now(),
+      commits: [{ id: 'cached', message: 'Cached commit', date: '2025-01-01' }],
+    }));
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+
+    const wrapper = mount(AboutPage);
+    await flushPromises();
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(wrapper.text()).toContain('Cached commit');
+    expect(wrapper.find('.loading-item').exists()).toBe(false);
   });
 
   it('reports timeouts instead of a generic failure', async () => {

@@ -112,13 +112,48 @@ const closeModal = () => emit('close');
 
 const GITHUB_COMMITS_URL = 'https://api.github.com/repos/LiamBlog/HomeVue/commits';
 const REQUEST_TIMEOUT = 8000;
+const CACHE_KEY = 'home-vue:commits';
+const CACHE_TTL = 10 * 60 * 1000;
+
+const readCachedCommits = () => {
+  try {
+    const cached = JSON.parse(localStorage.getItem(CACHE_KEY));
+    if (!cached || Date.now() - cached.savedAt >= CACHE_TTL) return null;
+    return Array.isArray(cached.commits) ? cached.commits : null;
+  } catch {
+    return null;
+  }
+};
+
+const writeCachedCommits = (commits) => {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ savedAt: Date.now(), commits }));
+  } catch {
+    // 隐私模式等场景下 localStorage 不可用，忽略缓存写入
+  }
+};
+
+const formatResetTime = (response) => {
+  const resetAt = Number(response?.headers?.get?.('x-ratelimit-reset'));
+  if (!resetAt) return '';
+
+  const date = new Date(resetAt * 1000);
+  return Number.isNaN(date.getTime())
+    ? ''
+    : date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+};
 
 const resolveErrorMessage = (error, response) => {
   if (navigator.onLine === false) return '当前网络不可用，请检查网络后重试';
   if (error?.name === 'AbortError') return '请求超时，请稍后重试';
 
   const status = response?.status;
-  if (status === 403 || status === 429) return 'GitHub 接口访问次数受限，请稍后重试';
+  if (status === 403 || status === 429) {
+    const resetTime = formatResetTime(response);
+    return resetTime
+      ? `GitHub 接口访问次数受限，预计 ${resetTime} 后可重试`
+      : 'GitHub 接口访问次数受限，请稍后重试';
+  }
   if (status >= 500) return 'GitHub 服务暂时不可用，请稍后重试';
   return '无法获取更新信息，请稍后重试';
 };
@@ -147,11 +182,13 @@ const fetchCommits = async () => {
     const commits = await response.json();
     if (!Array.isArray(commits)) throw new Error('Unexpected GitHub API response');
 
-    lastUpdates.value = commits.slice(0, 3).map((commit, index) => ({
+    const updates = commits.slice(0, 3).map((commit, index) => ({
       id: commit.sha || `commit-${index}`,
       message: commit.commit?.message?.split('\n')[0] || '无提交说明',
       date: formatDate(commit.commit?.author?.date)
     }));
+    lastUpdates.value = updates;
+    writeCachedCommits(updates);
   } catch (error) {
     console.error('获取更新信息失败', error);
     lastUpdates.value = [];
@@ -162,7 +199,13 @@ const fetchCommits = async () => {
   }
 };
 
-fetchCommits();
+const cachedCommits = readCachedCommits();
+if (cachedCommits) {
+  lastUpdates.value = cachedCommits;
+  loading.value = false;
+} else {
+  fetchCommits();
+}
 </script>
 
 <style scoped>
@@ -226,21 +269,23 @@ h3 {
 @media (max-width: 600px) {
   .tech-stack li,
   .tech-item {
+    flex: 0 0 calc((100% - 10px) / 3);
     font-size: 0.8em;
   }
 }
 
 .github-link {
   display: inline-block;
-  background-color: #040404d0;
+  background-color: var(--github-button-background);
   color: white;
   padding: 10px 20px;
+  border: 1px solid var(--github-button-border);
   border-radius: var(--border-radius);
   text-decoration: none;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 
   &:hover {
-    background-color: #1a1a1a;
+    background-color: var(--github-button-hover-background);
   }
 }
 
@@ -293,11 +338,11 @@ h3 {
 }
 
 .loading-spinner {
-  border: 4px solid rgba(0, 0, 0, 0.1);
+  border: 4px solid var(--border-color);
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  border-top-color: #ffcc00;
+  border-top-color: var(--accent-bright);
   animation: spin 1s ease-in-out infinite;
 }
 
@@ -307,13 +352,9 @@ h3 {
   justify-content: center;
   align-items: center;
   gap: 10px;
-  color: #c0392b;
+  color: var(--error-color);
   text-align: center;
   overflow-wrap: anywhere;
-}
-
-:global(.dark-mode) .update-error {
-  color: #ff8a80;
 }
 
 .retry-btn {

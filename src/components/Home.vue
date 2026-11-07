@@ -236,21 +236,49 @@ onUnmounted(() => {
       border-radius: 50%;
       background: none;
       cursor: pointer;
+      position: relative;
       transition: transform 0.3s ease;
+
+      &::after {
+        content: '关于';
+        position: absolute;
+        left: 50%;
+        bottom: 8px;
+        padding: 2px 10px;
+        border-radius: 999px;
+        color: #fff;
+        background-color: rgba(0, 0, 0, 0.55);
+        font-size: 0.75rem;
+        line-height: 1.5;
+        opacity: 0;
+        transform: translate(-50%, 6px);
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        pointer-events: none;
+      }
 
       @media (hover: hover) {
         &:hover {
           transform: scale(1.03);
-        }
-      }
 
-      &:active {
-        transform: scale(0.98);
+          &::after {
+            opacity: 1;
+            transform: translate(-50%, 0);
+          }
+        }
       }
 
       &:focus-visible {
         outline: 2px solid var(--hover-link-color);
         outline-offset: 4px;
+
+        &::after {
+          opacity: 1;
+          transform: translate(-50%, 0);
+        }
+      }
+
+      &:active {
+        transform: scale(0.98);
       }
     }
 
@@ -304,10 +332,12 @@ onUnmounted(() => {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    font-size: 1.3em;
+    font-size: 1.75em;
 
     h1 {
       margin: 0;
+      font-size: 2em;
+      line-height: 1.25;
     }
   }
 
@@ -540,7 +570,7 @@ onUnmounted(() => {
   }
 
   h1 {
-    font-size: 1.5em;
+    font-size: 1em;
   }
 
   .content .description {
