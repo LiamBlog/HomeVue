@@ -1,10 +1,7 @@
 <template>
   <div class="content">
     <div class="user-profile-container">
-      <div
-        v-motion-pop
-        class="user-profile-image"
-      >
+      <div class="user-profile-image anim-pop">
         <button
           ref="profileButton"
           type="button"
@@ -22,10 +19,7 @@
         </button>
         <span class="status-ball" />
       </div>
-      <div
-        v-motion-slide-left
-        class="user-name"
-      >
+      <div class="user-name anim-slide-left">
         <h1>Hi,</h1>
         <h1>I'm <span class="name-style">{{ userName }}</span></h1>
       </div>
@@ -33,10 +27,7 @@
     <div class="description">
       <p ref="descriptionElement" />
     </div>
-    <div
-      v-motion-pop
-      class="contact-section"
-    >
+    <div class="contact-section anim-pop">
       <template
         v-for="contact in contacts"
         :key="contact.type"
@@ -560,6 +551,36 @@ onUnmounted(() => {
     overflow-wrap: anywhere;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
+  }
+}
+
+.anim-pop {
+  animation: popIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+.anim-slide-left {
+  animation: slideInLeft 0.45s ease backwards;
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 

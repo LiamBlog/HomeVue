@@ -1,11 +1,8 @@
 <template>
   <div class="visit-timer-container">
     <button
-      v-motion
-      type="button" 
+      type="button"
       class="visit-timer"
-      :initial="{ opacity: 0, y: 50, x: '-50%', scale: 0.5 }"
-      :enter="{ opacity: 1, y: 0, x: '-50%', scale: 1, transition: { duration: 300 } }"
       :aria-expanded="showCalendar"
       aria-haspopup="dialog"
       aria-controls="calendar-popup"
@@ -193,6 +190,7 @@ onUnmounted(() => window.removeEventListener('keydown', closeCalendarOnEsc));
   font: inherit;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
+  animation: timerIn 0.3s ease backwards;
 
   &:focus-visible {
     outline: 2px solid var(--hover-link-color);
@@ -262,6 +260,17 @@ onUnmounted(() => window.removeEventListener('keydown', closeCalendarOnEsc));
     margin-top: 5px;
     font-weight: bold;
     overflow-wrap: anywhere;
+  }
+}
+
+@keyframes timerIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(50px) scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
   }
 }
 

@@ -3,11 +3,7 @@ import { mount } from '@vue/test-utils';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import VisitTimer from './VisitTimer.vue';
 
-const mountTimer = () => mount(VisitTimer, {
-  global: {
-    directives: { motion: {} },
-  },
-});
+const mountTimer = () => mount(VisitTimer);
 
 afterEach(() => {
   vi.useRealTimers();

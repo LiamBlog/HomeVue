@@ -27,12 +27,6 @@ afterEach(() => {
 const mountHome = () => {
   return wrapper = mount(Home, {
     attachTo: document.body,
-    global: {
-      directives: {
-        'motion-pop': {},
-        'motion-slide-left': {},
-      },
-    },
   });
 };
 
