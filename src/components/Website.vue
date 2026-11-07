@@ -34,12 +34,14 @@ import siteData from '../config/site.json';
 }
 
 .site-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 15px;
 }
 
 .site-box {
+  flex: 0 1 calc((100% - 30px) / 3);
   min-width: 0;
   padding: 30px;
   color: var(--text-color);
@@ -105,8 +107,8 @@ import siteData from '../config/site.json';
 }
 
 @media screen and (max-width: 768px) {
-  .site-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .site-box {
+    flex-basis: calc((100% - 15px) / 2);
   }
   .site-content {
     gap: 5px;
@@ -133,8 +135,11 @@ import siteData from '../config/site.json';
   }
 
   .site-grid {
-    grid-template-columns: minmax(0, 1fr);
     gap: 10px;
+  }
+
+  .site-box {
+    flex-basis: 100%;
   }
 
   .site-content {

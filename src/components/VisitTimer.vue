@@ -88,14 +88,36 @@ const useTimeManager = () => {
   const currentTime = ref(Date.now());
   let timer = null;
 
-  onMounted(() => {
-    timer = setInterval(() => {
+  const startTimer = () => {
+    if (timer) return;
+    timer = window.setInterval(() => {
       currentTime.value = Date.now();
     }, 1000);
+  };
+
+  const stopTimer = () => {
+    if (!timer) return;
+    window.clearInterval(timer);
+    timer = null;
+  };
+
+  const handleVisibilityChange = () => {
+    if (document.hidden) {
+      stopTimer();
+      return;
+    }
+    currentTime.value = Date.now();
+    startTimer();
+  };
+
+  onMounted(() => {
+    startTimer();
+    document.addEventListener('visibilitychange', handleVisibilityChange);
   });
 
   onUnmounted(() => {
-    if (timer) clearInterval(timer);
+    stopTimer();
+    document.removeEventListener('visibilitychange', handleVisibilityChange);
   });
 
   // 计算属性

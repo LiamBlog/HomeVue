@@ -104,18 +104,6 @@ const currentYear = computed(() => new Date().getFullYear());
   }
 }
 
-.background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-  /* 确保背景不会阻止滚动 */
-  pointer-events: none;
-  transition: background-color 0.35s ease;
-}
-
 footer {
   text-align: center;
   padding: 20px;

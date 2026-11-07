@@ -15,7 +15,8 @@
   --background-color-rgb: 238, 238, 238;
   --shadow-color: rgba(0, 0, 0, 0.2);
   --border-color: rgb(193 193 193 / 50%);
-  --hover-link-color: #ffcc00;
+  --hover-link-color: #9a6b00;
+  --accent-bright: #ffcc00;
   --hover-other-color:  #555;
   --surface-color: rgba(255, 255, 255, 0.45);
   --surface-color-hover: rgba(255, 255, 255, 0.7);
@@ -30,6 +31,7 @@
   --background-color-rgb: 51, 51, 51;
   --shadow-color: rgba(255, 255, 255, 0.2);
   --border-color: rgb(131 131 131 / 50%);
+  --hover-link-color: #ffcc00;
   --surface-color: rgba(255, 255, 255, 0.06);
   --surface-color-hover: rgba(255, 255, 255, 0.12);
   --popover-background: rgba(30, 30, 30, 0.94);
@@ -108,13 +110,12 @@ button:focus-visible {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: -2;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
   background: var(--background-color) var(--background-image) repeat;
+  transition: background-color 0.35s ease;
 }
 
 

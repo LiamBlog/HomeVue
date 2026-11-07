@@ -7,6 +7,7 @@ const mountTimer = () => mount(VisitTimer);
 
 afterEach(() => {
   vi.useRealTimers();
+  delete document.hidden;
 });
 
 describe('VisitTimer', () => {
@@ -23,6 +24,7 @@ describe('VisitTimer', () => {
 
     expect(wrapper.find('#calendar-popup').exists()).toBe(false);
     expect(wrapper.get('.visit-timer').attributes('aria-expanded')).toBe('false');
+    wrapper.unmount();
   });
 
   it('clears its interval when unmounted', () => {
@@ -32,5 +34,20 @@ describe('VisitTimer', () => {
     expect(vi.getTimerCount()).toBe(1);
     wrapper.unmount();
     expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it('pauses the interval while the page is hidden', () => {
+    vi.useFakeTimers();
+    const wrapper = mountTimer();
+
+    Object.defineProperty(document, 'hidden', { configurable: true, get: () => true });
+    document.dispatchEvent(new Event('visibilitychange'));
+    expect(vi.getTimerCount()).toBe(0);
+
+    Object.defineProperty(document, 'hidden', { configurable: true, get: () => false });
+    document.dispatchEvent(new Event('visibilitychange'));
+    expect(vi.getTimerCount()).toBe(1);
+
+    wrapper.unmount();
   });
 });
