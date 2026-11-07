@@ -35,48 +35,6 @@
             /> Github
           </a>
         </div>
-        <div class="update-info">
-          <h3>最近更新</h3>
-          <ul class="update-list">
-            <li
-              v-if="loading"
-              class="loading-item"
-              role="status"
-              aria-label="正在加载更新信息"
-            >
-              <div class="loading-spinner" />
-            </li>
-            <li
-              v-else-if="loadError"
-              class="update-error"
-              role="alert"
-            >
-              <span>{{ loadError }}</span>
-              <button
-                type="button"
-                class="retry-btn"
-                @click="fetchCommits"
-              >
-                重试
-              </button>
-            </li>
-            <li
-              v-else-if="!lastUpdates.length"
-              class="update-empty"
-            >
-              暂无更新记录
-            </li>
-            <template v-else>
-              <li
-                v-for="update in lastUpdates"
-                :key="update.id"
-                class="update-item"
-              >
-                {{ update.message }} <span v-if="update.date"> ({{ update.date }})</span>
-              </li>
-            </template>
-          </ul>
-        </div>
       </div>
       <button
         type="button"
@@ -94,8 +52,6 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-
 const emit = defineEmits(['close']);
 
 const techStack = [
@@ -105,107 +61,7 @@ const techStack = [
   { name: 'HTML5', icon: 'fab fa-html5' },
   { name: 'JavaScript', icon: 'fab fa-js' }
 ];
-const lastUpdates = ref([]);
-const loading = ref(true);
-const loadError = ref('');
 const closeModal = () => emit('close');
-
-const GITHUB_COMMITS_URL = 'https://api.github.com/repos/LiamBlog/HomeVue/commits';
-const REQUEST_TIMEOUT = 8000;
-const CACHE_KEY = 'home-vue:commits';
-const CACHE_TTL = 10 * 60 * 1000;
-
-const readCachedCommits = () => {
-  try {
-    const cached = JSON.parse(localStorage.getItem(CACHE_KEY));
-    if (!cached || Date.now() - cached.savedAt >= CACHE_TTL) return null;
-    return Array.isArray(cached.commits) ? cached.commits : null;
-  } catch {
-    return null;
-  }
-};
-
-const writeCachedCommits = (commits) => {
-  try {
-    localStorage.setItem(CACHE_KEY, JSON.stringify({ savedAt: Date.now(), commits }));
-  } catch {
-    // 隐私模式等场景下 localStorage 不可用，忽略缓存写入
-  }
-};
-
-const formatResetTime = (response) => {
-  const resetAt = Number(response?.headers?.get?.('x-ratelimit-reset'));
-  if (!resetAt) return '';
-
-  const date = new Date(resetAt * 1000);
-  return Number.isNaN(date.getTime())
-    ? ''
-    : date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
-};
-
-const resolveErrorMessage = (error, response) => {
-  if (navigator.onLine === false) return '当前网络不可用，请检查网络后重试';
-  if (error?.name === 'AbortError') return '请求超时，请稍后重试';
-
-  const status = response?.status;
-  if (status === 403 || status === 429) {
-    const resetTime = formatResetTime(response);
-    return resetTime
-      ? `GitHub 接口访问次数受限，预计 ${resetTime} 后可重试`
-      : 'GitHub 接口访问次数受限，请稍后重试';
-  }
-  if (status >= 500) return 'GitHub 服务暂时不可用，请稍后重试';
-  return '无法获取更新信息，请稍后重试';
-};
-
-const formatDate = (value) => {
-  if (!value) return '';
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? '' : date.toLocaleDateString('zh-CN');
-};
-
-const fetchCommits = async () => {
-  loading.value = true;
-  loadError.value = '';
-
-  const controller = new AbortController();
-  const timeoutId = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
-  let response;
-
-  try {
-    response = await fetch(GITHUB_COMMITS_URL, {
-      signal: controller.signal,
-      headers: { Accept: 'application/vnd.github+json' }
-    });
-    if (!response.ok) throw new Error(`GitHub API returned ${response.status}`);
-
-    const commits = await response.json();
-    if (!Array.isArray(commits)) throw new Error('Unexpected GitHub API response');
-
-    const updates = commits.slice(0, 3).map((commit, index) => ({
-      id: commit.sha || `commit-${index}`,
-      message: commit.commit?.message?.split('\n')[0] || '无提交说明',
-      date: formatDate(commit.commit?.author?.date)
-    }));
-    lastUpdates.value = updates;
-    writeCachedCommits(updates);
-  } catch (error) {
-    console.error('获取更新信息失败', error);
-    lastUpdates.value = [];
-    loadError.value = resolveErrorMessage(error, response);
-  } finally {
-    window.clearTimeout(timeoutId);
-    loading.value = false;
-  }
-};
-
-const cachedCommits = readCachedCommits();
-if (cachedCommits) {
-  lastUpdates.value = cachedCommits;
-  loading.value = false;
-} else {
-  fetchCommits();
-}
 </script>
 
 <style scoped>
@@ -291,16 +147,6 @@ h3 {
   }
 }
 
-.update-info ul,
-.update-list {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  min-height: 73px;
-  justify-content: center;
-  align-items: center;
-}
-
 .close-btn {
   position: absolute;
   top: 12px;
@@ -333,67 +179,6 @@ h3 {
   }
 }
 
-.loading-item {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.loading-spinner {
-  border: 4px solid var(--border-color);
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border-top-color: var(--accent-bright);
-  animation: spin 1s ease-in-out infinite;
-}
-
-.update-error {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  color: var(--error-color);
-  text-align: center;
-  overflow-wrap: anywhere;
-}
-
-.retry-btn {
-  padding: 4px 14px;
-  border: 1px solid currentColor;
-  border-radius: 999px;
-  background: none;
-  color: inherit;
-  font: inherit;
-  font-size: 0.9em;
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
-
-  &:focus-visible {
-    outline: 2px solid var(--hover-link-color);
-    outline-offset: 2px;
-  }
-
-  @media (hover: hover) {
-    &:hover {
-      background-color: currentColor;
-      color: var(--background-color);
-    }
-  }
-}
-
-.update-empty {
-  color: #7f8c8d;
-  font-style: italic;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
@@ -418,23 +203,10 @@ h3 {
 
   &:nth-child(1) { animation-delay: 0.12s; }
   &:nth-child(2) { animation-delay: 0.2s; }
-  &:nth-child(3) { animation-delay: 0.28s; }
-}
-
-.update-item {
-  width: 100%;
-  min-width: 0;
-  text-align: center;
-  overflow-wrap: anywhere;
-  word-break: break-word;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .about-page {
-    animation: none;
-  }
-
-  .loading-spinner {
     animation: none;
   }
 
