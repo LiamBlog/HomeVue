@@ -41,16 +41,40 @@
             <li
               v-if="loading"
               class="loading-item"
+              role="status"
+              aria-label="正在加载更新信息"
             >
               <div class="loading-spinner" />
             </li>
             <li
-              v-for="update in lastUpdates"
-              :key="update.id"
-              class="update-item"
+              v-else-if="loadError"
+              class="update-error"
+              role="alert"
             >
-              {{ update.message }} <span v-if="update.date"> ({{ update.date }})</span>
+              <span>{{ loadError }}</span>
+              <button
+                type="button"
+                class="retry-btn"
+                @click="fetchCommits"
+              >
+                重试
+              </button>
             </li>
+            <li
+              v-else-if="!lastUpdates.length"
+              class="update-empty"
+            >
+              暂无更新记录
+            </li>
+            <template v-else>
+              <li
+                v-for="update in lastUpdates"
+                :key="update.id"
+                class="update-item"
+              >
+                {{ update.message }} <span v-if="update.date"> ({{ update.date }})</span>
+              </li>
+            </template>
           </ul>
         </div>
       </div>
@@ -83,13 +107,38 @@ const techStack = [
 ];
 const lastUpdates = ref([]);
 const loading = ref(true);
+const loadError = ref('');
 const closeModal = () => emit('close');
+
+const GITHUB_COMMITS_URL = 'https://api.github.com/repos/JLinMr/Home-Vue/commits';
+const REQUEST_TIMEOUT = 8000;
+
+const resolveErrorMessage = (error, response) => {
+  if (navigator.onLine === false) return '当前网络不可用，请检查网络后重试';
+  if (error?.name === 'AbortError') return '请求超时，请稍后重试';
+
+  const status = response?.status;
+  if (status === 403 || status === 429) return 'GitHub 接口访问次数受限，请稍后重试';
+  if (status >= 500) return 'GitHub 服务暂时不可用，请稍后重试';
+  return '无法获取更新信息，请稍后重试';
+};
+
+const formatDate = (value) => {
+  if (!value) return '';
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? '' : date.toLocaleDateString('zh-CN');
+};
+
 const fetchCommits = async () => {
+  loading.value = true;
+  loadError.value = '';
+
   const controller = new AbortController();
-  const timeoutId = window.setTimeout(() => controller.abort(), 8000);
+  const timeoutId = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+  let response;
 
   try {
-    const response = await fetch('https://api.github.com/repos/JLinMr/Home-Vue/commits', {
+    response = await fetch(GITHUB_COMMITS_URL, {
       signal: controller.signal,
       headers: { Accept: 'application/vnd.github+json' }
     });
@@ -98,16 +147,15 @@ const fetchCommits = async () => {
     const commits = await response.json();
     if (!Array.isArray(commits)) throw new Error('Unexpected GitHub API response');
 
-    lastUpdates.value = commits.slice(0, 3).map(commit => ({
-      id: commit.sha,
+    lastUpdates.value = commits.slice(0, 3).map((commit, index) => ({
+      id: commit.sha || `commit-${index}`,
       message: commit.commit?.message?.split('\n')[0] || '无提交说明',
-      date: commit.commit?.author?.date
-        ? new Date(commit.commit.author.date).toLocaleDateString()
-        : ''
+      date: formatDate(commit.commit?.author?.date)
     }));
   } catch (error) {
     console.error('获取更新信息失败', error);
-    lastUpdates.value = [{ id: 'error', message: '无法获取更新信息', date: '' }];
+    lastUpdates.value = [];
+    loadError.value = resolveErrorMessage(error, response);
   } finally {
     window.clearTimeout(timeoutId);
     loading.value = false;
@@ -253,7 +301,46 @@ h3 {
   animation: spin 1s ease-in-out infinite;
 }
 
-.loading-text {
+.update-error {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  color: #c0392b;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+:global(.dark-mode) .update-error {
+  color: #ff8a80;
+}
+
+.retry-btn {
+  padding: 4px 14px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 0.9em;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+
+  &:focus-visible {
+    outline: 2px solid var(--hover-link-color);
+    outline-offset: 2px;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: currentColor;
+      color: var(--background-color);
+    }
+  }
+}
+
+.update-empty {
   color: #7f8c8d;
   font-style: italic;
 }
