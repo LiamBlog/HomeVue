@@ -24,7 +24,7 @@
         <div class="github-info">
           <h3>开源地址</h3>
           <a
-            href="https://github.com/JLinMr/Home-Vue"
+            href="https://github.com/LiamBlog/HomeVue"
             target="_blank"
             rel="noopener noreferrer"
             class="github-link"
@@ -110,7 +110,7 @@ const loading = ref(true);
 const loadError = ref('');
 const closeModal = () => emit('close');
 
-const GITHUB_COMMITS_URL = 'https://api.github.com/repos/JLinMr/Home-Vue/commits';
+const GITHUB_COMMITS_URL = 'https://api.github.com/repos/LiamBlog/HomeVue/commits';
 const REQUEST_TIMEOUT = 8000;
 
 const resolveErrorMessage = (error, response) => {
@@ -215,7 +215,7 @@ h3 {
 .tech-stack li:hover,
 .tech-item:hover {
   background-color: var(--hover-other-color);
-  color: var(--hover-link-color);
+  color: var(--accent-bright);
 }
 
 .tech-stack li i,
