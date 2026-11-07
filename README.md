@@ -60,18 +60,33 @@ npm run test
 
 ### 字体子集
 
-`public/fonts/YSHST.woff2` 是按源码用字裁剪后的子集（约 148 KB，完整字体约 1.2 MB，保存在 `scripts/fonts/YSHST.source.woff2`）。
+页面使用本地字体 `YSHST`，通过子集化只保留实际用到的字符，避免首屏加载完整中文字体。
 
-修改界面文案后如需重建字体子集：
+| 项目 | 路径 | 体积 |
+|------|------|------|
+| 完整字体（源文件，不参与构建） | `scripts/fonts/YSHST.source.woff2` | 1226.5 KB |
+| 子集字体（实际引用） | `public/fonts/YSHST.woff2` | 147.6 KB（约 -88%） |
+
+子集字体在 `src/style.less` 中通过 `@font-face` 注册（`font-display: swap`），并在 `index.html` 中预加载以缩短首屏换字时间。
+
+#### 重新生成
+
+**修改界面文案后需要重新生成**，否则新出现的汉字会回退到系统字体：
 
 ```bash
-# 首次使用需安装依赖
+# 首次使用需安装 Python 依赖
 pip install fonttools brotli
-# 扫描 src、index.html、README.md 中的字符并重新生成子集
+# 重新生成子集
 npm run font:subset
 ```
 
-脚本会自动加入日期、星期、中文数字等运行时才渲染的字符；`AboutPage` 中动态获取的 GitHub 提交信息若含生僻字，会回退到系统字体。
+脚本（`scripts/subset-font.py`）的行为：
+
+- 扫描 `src/` 下的 `.vue`、`.js`、`.json`、`.less`、`.html`、`.md` 文件，以及 `index.html`、`README.md`
+- 始终加入 ASCII 基础字符、常用中英文标点，以及年月日、星期、中文数字、时分秒等运行时才渲染的用字
+- 输出字符数与前后体积对比，例如：`字符数：991`、`字体体积：1226.5 KB -> 147.6 KB（88% 缩减）`
+
+> 说明：`AboutPage` 会动态展示 GitHub 提交信息，若其中包含子集之外的生僻字，将通过 `font-display: swap` 回退到系统 `sans-serif`，不影响可读性。
 
 ### Vercel部署
 
