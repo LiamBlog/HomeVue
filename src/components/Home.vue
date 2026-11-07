@@ -127,7 +127,7 @@ import AboutPage from './AboutPage.vue';
 import VisitTimer from './VisitTimer.vue';
 import { useTheme } from '../composables/useTheme';
 import { useDialogFocus } from '../composables/useDialogFocus';
-import Typed from 'typed.js';
+import { useTypewriter } from '../composables/useTypewriter';
 
 const showQR = ref(false);
 const showAbout = ref(false);
@@ -140,9 +140,9 @@ const descriptionElement = ref(null);
 
 const { isDarkMode, darkModeIconClass, initializeTheme, toggleDarkMode } = useTheme();
 
-let typedInstance = null;
+let stopTypewriter = null;
 
-const initializeTyped = () => {
+const initializeTypewriter = () => {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (prefersReducedMotion) {
     if (descriptionElement.value) {
@@ -151,14 +151,7 @@ const initializeTyped = () => {
     return;
   }
 
-  typedInstance = new Typed(descriptionElement.value, {
-    strings: predefinedDescriptions,
-    typeSpeed: 120,
-    backSpeed: 80,
-    showCursor: true,
-    cursorChar: '|',
-    loop: true,
-  });
+  ({ stop: stopTypewriter } = useTypewriter(descriptionElement, predefinedDescriptions));
 };
 
 function closeActiveOverlay() {
@@ -201,12 +194,12 @@ const closeAbout = () => {
 };
 
 onMounted(() => {
-  initializeTyped();
+  initializeTypewriter();
   initializeTheme();
 });
 
 onUnmounted(() => {
-  typedInstance?.destroy();
+  stopTypewriter?.();
 });
 </script>
 
@@ -243,6 +236,17 @@ onUnmounted(() => {
       border-radius: 50%;
       background: none;
       cursor: pointer;
+      transition: transform 0.3s ease;
+
+      @media (hover: hover) {
+        &:hover {
+          transform: scale(1.03);
+        }
+      }
+
+      &:active {
+        transform: scale(0.98);
+      }
 
       &:focus-visible {
         outline: 2px solid var(--hover-link-color);
@@ -272,7 +276,7 @@ onUnmounted(() => {
       align-items: center;
       transition: all 0.3s ease;
       z-index: 1;
-      cursor: pointer;
+      cursor: default;
       overflow: hidden;
 
       &::before {
@@ -358,16 +362,25 @@ onUnmounted(() => {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+
+      &::after {
+        content: '|';
+        margin-left: 2px;
+        color: var(--text-color);
+        animation: cursorBlink 1s step-end infinite;
+      }
     }
   }
 
   .contact-section {
     display: flex;
     justify-content: center;
-    gap: 20px;
-    padding: 5px 10px;
-    border: 1px solid transparent;
-    border-radius: var(--border-radius);
+    gap: 18px;
+    padding: 8px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    background-color: var(--surface-color);
+    backdrop-filter: blur(10px);
     transition: all 0.3s ease-in-out;
 
     .contact-item {
@@ -405,6 +418,10 @@ onUnmounted(() => {
         }
       }
 
+      &:active {
+        transform: translateY(-2px) scale(0.92);
+      }
+
       @media (hover: hover) {
         &:hover {
           transform: translateY(-5px) rotate(10deg);
@@ -431,10 +448,8 @@ onUnmounted(() => {
 
     @media (hover: hover) {
       &:hover {
-        backdrop-filter: blur(10px);
-        border: 1px solid var(--border-color);
-        box-shadow: 0 2px 8px var(--shadow-color);
-        background-color: rgba(var(--background-color-rgb), 0.2);
+        background-color: var(--surface-color-hover);
+        box-shadow: 0 6px 18px var(--shadow-color);
       }
     }
   }
@@ -519,7 +534,6 @@ onUnmounted(() => {
     flex-direction: column;
     gap: 0;
   }
-
   .content .user-name {
     align-items: center;
     text-align: center;
@@ -554,6 +568,16 @@ onUnmounted(() => {
   }
 }
 
+@media screen and (max-width: 360px) {
+  .content {
+    gap: 12px;
+  }
+
+  .content .description {
+    font-size: 1.05rem;
+  }
+}
+
 .anim-pop {
   animation: popIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
 }
@@ -581,6 +605,12 @@ onUnmounted(() => {
   to {
     opacity: 1;
     transform: translateX(0);
+  }
+}
+
+@keyframes cursorBlink {
+  50% {
+    opacity: 0;
   }
 }
 

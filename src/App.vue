@@ -125,12 +125,13 @@ footer {
   margin-top: auto;
   width: 100%;
   box-sizing: border-box;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--footer-background);
   backdrop-filter: blur(10px);
+  border-top: 1px solid var(--border-color);
   /* 确保footer不会阻止内容滚动 */
   position: relative;
   z-index: 1;
-  transition: color 0.35s ease;
+  transition: color 0.35s ease, background-color 0.35s ease, border-color 0.35s ease;
 }
 
 .footer-content {

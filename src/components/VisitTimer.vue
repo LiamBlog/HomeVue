@@ -186,9 +186,9 @@ onUnmounted(() => window.removeEventListener('keydown', closeCalendarOnEsc));
   padding: 8px 15px;
   border-radius: 20px;
   color: var(--text-color);
-  background-color: rgba(var(--background-color-rgb), 0.2);
+  background-color: var(--surface-color);
   font: inherit;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
   cursor: pointer;
   animation: timerIn 0.3s ease backwards;
 
@@ -203,6 +203,7 @@ onUnmounted(() => window.removeEventListener('keydown', closeCalendarOnEsc));
     &:hover {
       transform: translateX(-50%) translateY(-5px);
       box-shadow: 0 2px 8px var(--shadow-color);
+      background-color: var(--surface-color-hover);
     }
   }
 
@@ -245,6 +246,7 @@ onUnmounted(() => window.removeEventListener('keydown', closeCalendarOnEsc));
   padding: 12px;
   border-radius: 8px;
   box-shadow: 0 2px 12px var(--shadow-color);
+  background-color: var(--popover-background);
   min-width: min(188px, calc(100vw - 32px));
 
   .calendar-header {

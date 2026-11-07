@@ -3,12 +3,6 @@ import { mount, flushPromises } from '@vue/test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import Home from './Home.vue';
 
-const { typedDestroy } = vi.hoisted(() => ({ typedDestroy: vi.fn() }));
-vi.mock('typed.js', () => ({
-  default: vi.fn(function MockTyped() {
-    this.destroy = typedDestroy;
-  }),
-}));
 vi.mock('./Website.vue', () => ({ default: { template: '<div />' } }));
 vi.mock('./VisitTimer.vue', () => ({ default: { template: '<div />' } }));
 vi.mock('./AboutPage.vue', () => ({
@@ -35,7 +29,6 @@ describe('Home interactions', () => {
     localStorage.clear();
     document.documentElement.classList.remove('dark-mode');
     window.matchMedia = vi.fn().mockReturnValue({ matches: false });
-    typedDestroy.mockClear();
   });
 
   it('initializes theme from system preference and persists toggles', async () => {
@@ -74,9 +67,20 @@ describe('Home interactions', () => {
     expect(document.activeElement).toBe(trigger.element);
   });
 
-  it('destroys Typed.js when unmounted', () => {
+  it('stops the typewriter timers when unmounted', () => {
+    vi.useFakeTimers();
     const wrapper = mountHome();
+
+    expect(vi.getTimerCount()).toBe(1);
     wrapper.unmount();
-    expect(typedDestroy).toHaveBeenCalledOnce();
+    expect(vi.getTimerCount()).toBe(0);
+    vi.useRealTimers();
+  });
+
+  it('shows the first description without typing when reduced motion is preferred', () => {
+    window.matchMedia.mockReturnValue({ matches: true });
+    const wrapper = mountHome();
+
+    expect(wrapper.get('.description p').text()).toBe('你好鸭，欢迎来到我的主页！！');
   });
 });

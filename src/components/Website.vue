@@ -47,9 +47,13 @@ import siteData from '../config/site.json';
   backdrop-filter: blur(10px);
   border-radius: var(--border-radius);
   border: 1px solid var(--border-color);
-  background-color: rgba(var(--background-color-rgb), 0.2);
+  background-color: var(--surface-color);
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
+
+  &:active {
+    transform: translateY(-1px) scale(0.99);
+  }
 
   &:focus-visible {
     outline: 2px solid var(--hover-link-color);
@@ -61,7 +65,7 @@ import siteData from '../config/site.json';
       transform: translateY(-4px);
       box-shadow: 0 6px 18px var(--shadow-color);
       border-color: var(--hover-link-color);
-      background-color: rgba(var(--background-color-rgb), 0.35);
+      background-color: var(--surface-color-hover);
 
       .site-content i,
       .site-name {
